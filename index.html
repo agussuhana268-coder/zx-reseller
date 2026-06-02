@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ZX Reseller Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ══════════════════════════════════════════════════════
+   DESIGN TOKENS — IDENTICAL TO ADMIN PANEL
+══════════════════════════════════════════════════════ */
+:root{
+  --bg:#060d1a;--bg2:#091425;--bg3:#0d1e38;
+  --card:rgba(9,20,42,.97);--card2:rgba(12,26,52,.95);
+  --b1:#1d4ed8;--b2:#2563eb;--b3:#3b82f6;
+  --sky:#0ea5e9;--sky2:#38bdf8;--sky3:#7dd3fc;
+  --cyan:#06b6d4;--purple:#818cf8;--grn:#10b981;--gold:#f59e0b;--rose:#f43f5e;
+  --bdr:rgba(56,189,248,.12);--bdr2:rgba(56,189,248,.2);--bdr3:rgba(56,189,248,.06);
+  --glow:rgba(37,99,235,.35);
+  --t1:#e2f4ff;--t2:#6288aa;--t3:#1e3a5a;--t4:#a0c8e8;
+  --sb:240px;--nav-h:56px;
+  --mono:'JetBrains Mono',monospace;
+  --hud:'Orbitron',monospace;
+  --accent:var(--sky);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(56,189,248,.2);border-radius:4px}
+body{
+  font-family:var(--mono);background:var(--bg);color:var(--t1);
+  min-height:100vh;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 40% at 80% 10%,rgba(37,99,235,.09) 0%,transparent 60%),
+             radial-gradient(ellipse 40% 50% at 10% 90%,rgba(6,182,212,.06) 0%,transparent 55%);
+}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;border:none;outline:none;font-family:var(--mono);}
+input,select,textarea{font-family:var(--mono);outline:none;}
+
+/* ══ LOGIN ══ */
+#login-page{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);z-index:9999;
+}
+.login-card{
+  width:100%;max-width:380px;background:var(--card);
+  border:1px solid var(--bdr);border-radius:18px;padding:36px 32px;
+  position:relative;z-index:1;
+}
+.login-logo{
+  text-align:center;margin-bottom:28px;
+}
+.login-logo-hex{
+  width:54px;height:54px;margin:0 auto 14px;position:relative;display:flex;align-items:center;justify-content:center;
+}
+.login-M{font-family:var(--hud);font-size:18px;color:var(--sky2);position:relative;z-index:2;}
+.login-title{font-family:var(--hud);font-size:13px;font-weight:700;color:var(--sky2);letter-spacing:2px;}
+.login-sub{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:2px;margin-top:4px;}
+.login-fields{display:flex;flex-direction:column;gap:12px;margin-bottom:18px;}
+.login-label{font-size:8px;letter-spacing:.15em;color:var(--t2);display:block;margin-bottom:5px;text-transform:uppercase;}
+.login-input{
+  width:100%;background:rgba(14,165,233,.04);border:1px solid var(--bdr);
+  border-radius:8px;padding:11px 14px;color:var(--t1);font-size:12px;
+  transition:border-color .2s;
+}
+.login-input:focus{border-color:var(--sky2);}
+.login-btn{
+  width:100%;padding:13px;background:linear-gradient(135deg,var(--b1),var(--sky));
+  border-radius:10px;color:#fff;font-family:var(--hud);font-size:10px;
+  font-weight:700;letter-spacing:2px;transition:opacity .2s;
+}
+.login-btn:hover{opacity:.88;}
+.login-msg{
+  text-align:center;font-size:9px;margin-top:12px;min-height:16px;
+  color:var(--rose);letter-spacing:.05em;
+}
+.login-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:8px;color:var(--t3);border:1px solid var(--bdr3);
+  border-radius:20px;padding:4px 10px;margin-top:16px;width:100%;justify-content:center;
+}
+
+/* ══ LAYOUT ══ */
+#app{display:none;min-height:100vh;}
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(6,13,26,.94);border-bottom:1px solid var(--bdr3);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;z-index:100;backdrop-filter:blur(12px);
+}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.tb-logo{font-family:var(--hud);font-size:12px;font-weight:700;color:var(--sky2);letter-spacing:2px;}
+.tb-logo span{color:var(--t2);font-size:9px;font-weight:400;letter-spacing:1px;margin-left:6px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.tb-user{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(56,189,248,.06);border:1px solid var(--bdr);
+  border-radius:8px;padding:6px 12px;cursor:pointer;
+}
+.tb-avatar{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--b1),var(--sky));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--hud);font-size:11px;color:#fff;flex-shrink:0;
+}
+.tb-uname{font-size:10px;color:var(--t1);font-weight:600;}
+.tb-urole{font-size:7.5px;color:var(--sky);letter-spacing:.1em;text-transform:uppercase;}
+.tb-logout{
+  padding:6px 14px;background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.2);
+  border-radius:7px;font-size:8.5px;color:#f43f5e;letter-spacing:.1em;
+  transition:all .15s;
+}
+.tb-logout:hover{background:rgba(244,63,94,.14);}
+
+/* Sidebar */
+.sidebar{
+  position:fixed;left:0;top:var(--nav-h);bottom:0;width:var(--sb);
+  background:rgba(6,13,26,.95);border-right:1px solid var(--bdr3);
+  display:flex;flex-direction:column;overflow-y:auto;z-index:90;
+  padding:14px 10px;
+}
+.sb-section{font-family:var(--hud);font-size:6.5px;letter-spacing:3px;color:var(--t3);padding:12px 10px 6px;text-transform:uppercase;}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 12px;border-radius:10px;cursor:pointer;
+  margin-bottom:2px;transition:all .15s;color:var(--t2);
+}
+.nav-item:hover{background:rgba(56,189,248,.06);color:var(--t4);}
+.nav-item.active{background:rgba(37,99,235,.14);border:1px solid rgba(56,189,248,.16);color:var(--t1);}
+.nav-item svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0;}
+.nav-item.active svg{stroke:var(--sky2);}
+.nav-label{font-size:9.5px;font-weight:500;}
+
+/* Main content */
+.main{margin-left:var(--sb);padding-top:var(--nav-h);}
+.page{display:none;padding:22px 24px;}
+.page.active{display:block;}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+.page-title{font-family:var(--hud);font-size:18px;font-weight:700;color:var(--t1);}
+.page-sub{font-family:var(--mono);font-size:9px;color:var(--t2);letter-spacing:.1em;margin-top:4px;text-transform:uppercase;}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:12px;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+@media(max-width:700px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-card{
+  background:var(--card);border:1px solid var(--bdr);border-radius:12px;
+  padding:16px;position:relative;overflow:hidden;
+}
+.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.stat-label{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;color:var(--t2);text-transform:uppercase;}
+.stat-ico{
+  width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.stat-ico svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;}
+.stat-ico.blue{background:rgba(59,130,246,.12);color:#3b82f6;}
+.stat-ico.cyan{background:rgba(6,182,212,.1);color:var(--cyan);}
+.stat-ico.grn{background:rgba(16,185,129,.1);color:var(--grn);}
+.stat-ico.gold{background:rgba(245,158,11,.1);color:var(--gold);}
+.stat-val{font-family:var(--hud);font-size:26px;font-weight:700;color:var(--t1);display:block;line-height:1.1;}
+.stat-sub{font-family:var(--mono);font-size:8px;color:var(--t3);margin-top:4px;display:block;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.stat-card.c-blue::before{background:linear-gradient(90deg,#2563eb,#3b82f6);}
+.stat-card.c-cyan::before{background:linear-gradient(90deg,#06b6d4,#22d3ee);}
+.stat-card.c-grn::before{background:linear-gradient(90deg,#10b981,#34d399);}
+.stat-card.c-gold::before{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+
+/* Inventory cards */
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:18px;}
+.inv-card{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:16px;}
+.inv-name{font-family:var(--hud);font-size:10px;font-weight:700;color:var(--t1);margin-bottom:12px;letter-spacing:1px;}
+.inv-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.inv-lbl{font-size:8px;color:var(--t2);}
+.inv-val{font-size:10px;font-weight:700;color:var(--t1);}
+.inv-bar{height:4px;background:var(--bdr);border-radius:2px;margin-top:10px;overflow:hidden;}
+.inv-fill{height:4px;background:var(--sky);border-radius:2px;transition:width .4s ease;}
+.inv-fill.warn{background:var(--gold);}
+.inv-fill.danger{background:var(--rose);}
+.inv-price{font-size:8px;color:var(--sky);margin-top:8px;font-weight:600;}
+
+/* Table */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{
+  font-family:var(--mono);font-size:8px;letter-spacing:.14em;
+  color:var(--t2);font-weight:600;text-transform:uppercase;
+  padding:10px 14px;text-align:left;border-bottom:1px solid var(--bdr);
+  white-space:nowrap;
+}
+tbody td{
+  font-family:var(--mono);font-size:9px;color:var(--t1);
+  padding:11px 14px;border-bottom:1px solid var(--bdr3);
+  vertical-align:middle;
+}
+tbody tr:hover td{background:rgba(56,189,248,.03);}
+tbody tr:last-child td{border-bottom:none;}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;padding:3px 9px;border-radius:4px;white-space:nowrap;text-transform:uppercase;}
+.badge-ok{background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.2);}
+.badge-warn{background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.2);}
+.badge-err{background:rgba(244,63,94,.08);color:var(--rose);border:1px solid rgba(244,63,94,.15);}
+.badge-info{background:rgba(14,165,233,.08);color:var(--sky);border:1px solid rgba(14,165,233,.15);}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:8px;font-family:var(--mono);
+  font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  transition:all .15s;cursor:pointer;
+}
+.btn-primary{background:linear-gradient(135deg,var(--b1),var(--sky));color:#fff;}
+.btn-primary:hover{opacity:.88;}
+.btn-secondary{background:rgba(56,189,248,.07);border:1px solid var(--bdr);color:var(--t2);}
+.btn-secondary:hover{background:rgba(56,189,248,.12);color:var(--t1);}
+.btn-sm{padding:6px 12px;font-size:8px;}
+.btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;}
+
+/* Form */
+.form-group{margin-bottom:14px;}
+.form-label{font-size:8px;letter-spacing:.15em;color:var(--t2);display:block;margin-bottom:5px;text-transform:uppercase;}
+.form-input,.form-select{
+  width:100%;background:rgba(14,165,233,.04);border:1px solid var(--bdr);
+  border-radius:8px;padding:10px 13px;color:var(--t1);font-size:11px;
+  transition:border-color .2s;
+}
+.form-input:focus,.form-select:focus{border-color:var(--sky2);}
+.form-select option{background:var(--bg2);color:var(--t1);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* Modal */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.vis{display:flex;}
+.modal{
+  background:var(--bg2);border:1px solid var(--bdr);border-radius:16px;
+  padding:28px;width:100%;max-width:460px;position:relative;
+}
+.modal-title{font-family:var(--hud);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:6px;}
+.modal-sub{font-size:8.5px;color:var(--t2);margin-bottom:22px;letter-spacing:.05em;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;}
+.modal-close{
+  position:absolute;top:16px;right:16px;width:30px;height:30px;
+  background:rgba(56,189,248,.07);border:1px solid var(--bdr);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--t2);
+  cursor:pointer;
+}
+.modal-close svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
+
+/* Toast */
+#toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+}
+.toast-msg{
+  background:var(--card);border:1px solid var(--bdr);border-radius:10px;
+  padding:11px 18px;font-family:var(--mono);font-size:9.5px;
+  color:var(--t1);display:flex;align-items:center;gap:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+  animation:slideIn .25s ease;min-width:220px;
+}
+.toast-msg.t-s{border-left:3px solid var(--grn);}
+.toast-msg.t-e{border-left:3px solid var(--rose);}
+.toast-msg.t-w{border-left:3px solid var(--gold);}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:none;}}
+
+/* Divider */
+.section-divider{height:1px;background:var(--bdr3);margin:20px 0;}
+
+/* Generate form card */
+.gen-card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;max-width:540px;}
+.product-select-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:16px;}
+.prod-opt{
+  background:rgba(14,165,233,.04);border:1px solid var(--bdr);
+  border-radius:10px;padding:12px;cursor:pointer;transition:all .15s;
+  position:relative;
+}
+.prod-opt:hover{border-color:var(--bdr2);}
+.prod-opt.selected{background:rgba(37,99,235,.12);border-color:rgba(56,189,248,.4);}
+.prod-opt.disabled{opacity:.4;cursor:not-allowed;}
+.prod-opt-name{font-family:var(--hud);font-size:9px;font-weight:700;color:var(--t1);margin-bottom:4px;letter-spacing:.5px;}
+.prod-opt-price{font-size:8px;color:var(--sky);}
+.prod-opt-slot{font-size:7.5px;color:var(--t3);margin-top:3px;}
+.prod-opt.selected .prod-opt-name{color:var(--sky2);}
+
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .main{margin-left:0;}
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .page{padding:16px;}
+  .topbar{padding:0 14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-hex">
+        <svg viewBox="0 0 54 54" fill="none" style="position:absolute;inset:0;width:100%;height:100%;">
+          <polygon points="27,2 50,14.5 50,39.5 27,52 4,39.5 4,14.5" fill="rgba(6,13,26,.9)" stroke="rgba(56,189,248,.4)" stroke-width="1.4"/>
+        </svg>
+        <span class="login-M">R</span>
+      </div>
+      <div class="login-title">ZX RESELLER</div>
+      <div class="login-sub">PANEL v1.0</div>
+    </div>
+    <div class="login-fields">
+      <div>
+        <label class="login-label">Email</label>
+        <input class="login-input" id="li-email" type="email" placeholder="reseller@email.com" autocomplete="username"/>
+      </div>
+      <div>
+        <label class="login-label">Password</label>
+        <input class="login-input" id="li-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+    </div>
+    <button class="login-btn" id="li-btn" onclick="doLogin()">MASUK</button>
+    <div class="login-msg" id="li-msg"></div>
+    <div style="text-align:center;margin-top:14px;">
+      <span class="login-badge">
+        <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Akses reseller terverifikasi
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="tb-logo">ZX <span>RESELLER PANEL</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="tb-user">
+        <div class="tb-avatar" id="tb-av">R</div>
+        <div>
+          <div class="tb-uname" id="tb-uname">Reseller</div>
+          <div class="tb-urole">Reseller</div>
+        </div>
+      </div>
+      <button class="tb-logout" onclick="doLogout()">LOGOUT</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sb-section">MENU</div>
+    <div class="nav-item active" onclick="navTo('dashboard')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="nav-label">Dashboard</span>
+    </div>
+    <div class="nav-item" onclick="navTo('inventory')">
+      <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      <span class="nav-label">Inventory Slot</span>
+    </div>
+    <div class="nav-item" onclick="navTo('generate')">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      <span class="nav-label">Generate License</span>
+    </div>
+    <div class="nav-item" onclick="navTo('transactions')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span class="nav-label">Transaksi</span>
+    </div>
+    <div class="nav-item" onclick="navTo('licenses')">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><circle cx="12" cy="12" r=".5" fill="currentColor"/></svg>
+      <span class="nav-label">License History</span>
+    </div>
+    <div class="sb-section">AKUN</div>
+    <div class="nav-item" onclick="navTo('account')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="nav-label">Akun Saya</span>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Dashboard</div>
+          <div class="page-sub">Overview aktivitas reseller</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="loadAll()">
+          <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Refresh
+        </button>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card c-blue">
+          <div class="stat-top"><span class="stat-label">Total Slot</span><div class="stat-ico blue"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div></div>
+          <span class="stat-val" id="dash-total-slot">0</span>
+          <span class="stat-sub">Slot dialokasikan</span>
+        </div>
+        <div class="stat-card c-cyan">
+          <div class="stat-top"><span class="stat-label">Slot Terpakai</span><div class="stat-ico cyan"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+          <span class="stat-val" id="dash-used-slot">0</span>
+          <span class="stat-sub">License dibuat</span>
+        </div>
+        <div class="stat-card c-grn">
+          <div class="stat-top"><span class="stat-label">Slot Sisa</span><div class="stat-ico grn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div></div>
+          <span class="stat-val" id="dash-rem-slot">0</span>
+          <span class="stat-sub">Tersedia</span>
+        </div>
+        <div class="stat-card c-gold">
+          <div class="stat-top"><span class="stat-label">Transaksi</span><div class="stat-ico gold"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div>
+          <span class="stat-val" id="dash-trx">0</span>
+          <span class="stat-sub">Total transaksi</span>
+        </div>
+      </div>
+
+      <div class="card" style="padding:18px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div>
+            <div style="font-family:var(--hud);font-size:10px;font-weight:700;color:var(--t1);letter-spacing:1px;">INVENTORY RINGKASAN</div>
+            <div style="font-size:8px;color:var(--t2);margin-top:3px;">Slot per produk</div>
+          </div>
+        </div>
+        <div class="inv-grid" id="dash-inv-grid"></div>
+      </div>
+
+      <div class="card" style="padding:18px;">
+        <div style="font-family:var(--hud);font-size:10px;font-weight:700;color:var(--t1);letter-spacing:1px;margin-bottom:14px;">TRANSAKSI TERAKHIR</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Tanggal</th><th>Produk</th><th>Email Pembeli</th><th>Status</th></tr></thead>
+            <tbody id="dash-trx-tbody"><tr><td colspan="4" style="text-align:center;color:var(--t3);padding:20px;">Memuat...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="page" id="page-inventory">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Inventory Slot</div>
+          <div class="page-sub">Manajemen slot produk kamu</div>
+        </div>
+      </div>
+      <div class="inv-grid" id="inv-grid-full" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));"></div>
+    </div>
+
+    <!-- GENERATE -->
+    <div class="page" id="page-generate">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Generate License</div>
+          <div class="page-sub">Buat license baru untuk pembeli</div>
+        </div>
+      </div>
+      <div class="gen-card">
+        <div style="font-size:8.5px;color:var(--t2);margin-bottom:14px;text-transform:uppercase;letter-spacing:.14em;">1. Pilih Produk</div>
+        <div class="product-select-grid" id="gen-prod-grid"></div>
+        <div class="section-divider"></div>
+        <div class="form-group">
+          <label class="form-label">2. Email Pembeli</label>
+          <input class="form-input" id="gen-email" type="email" placeholder="pembeli@email.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">3. Durasi (opsional)</label>
+          <div class="form-row">
+            <input class="form-input" id="gen-dur" type="number" min="1" placeholder="Kosong = permanent"/>
+            <select class="form-select" id="gen-dur-unit">
+              <option value="days">Hari</option>
+              <option value="months">Bulan</option>
+              <option value="years">Tahun</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="gen-btn" onclick="doGenerate()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Generate & Kirim
+        </button>
+        <div id="gen-result" style="margin-top:14px;font-size:9px;color:var(--grn);display:none;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:12px;"></div>
+      </div>
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <div class="page" id="page-transactions">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Riwayat Transaksi</div>
+          <div class="page-sub">Semua transaksi yang kamu buat</div>
+        </div>
+      </div>
+      <div class="card" style="padding:18px;">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Tanggal</th><th>Produk</th><th>Email Pembeli</th><th>License Key</th><th>Email</th><th>Status</th></tr></thead>
+            <tbody id="trx-tbody"><tr><td colspan="6" style="text-align:center;color:var(--t3);padding:20px;">Memuat...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- LICENSES -->
+    <div class="page" id="page-licenses">
+      <div class="page-header">
+        <div>
+          <div class="page-title">License History</div>
+          <div class="page-sub">Semua license yang pernah kamu buat</div>
+        </div>
+      </div>
+      <div class="card" style="padding:18px;">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Tanggal</th><th>Produk</th><th>Key</th><th>Email</th><th>Device</th><th>Status</th></tr></thead>
+            <tbody id="lic-tbody"><tr><td colspan="6" style="text-align:center;color:var(--t3);padding:20px;">Memuat...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="page" id="page-account">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Akun Saya</div>
+          <div class="page-sub">Informasi akun reseller</div>
+        </div>
+      </div>
+      <div class="card" style="padding:22px;max-width:420px;">
+        <div id="acc-info" style="display:flex;flex-direction:column;gap:14px;"></div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Generate success modal -->
+<div class="modal-overlay" id="modal-gen-ok">
+  <div class="modal">
+    <div class="modal-close" onclick="closeModal('modal-gen-ok')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+    <div class="modal-title">License Berhasil Dibuat</div>
+    <div class="modal-sub">License telah digenerate dan dikirim ke email pembeli.</div>
+    <div id="modal-gen-content" style="background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:16px;font-size:10px;line-height:1.9;"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-gen-ok')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIG — GANTI DENGAN SUPABASE PROJECT KAMU
+// ═══════════════════════════════════════════════════════════════
+const SUPA_URL = 'https://miorkkrwldqkmgugppyk.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1pb3Jra3J3bGRxa21ndWdwcHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NDIwNjksImV4cCI6MjA5NTExODA2OX0.r_JeD_NdPpKZ7X_yAy8vx5Llrk6APV6AE7zQHTlxTD0';
+
+// Supabase client
+const { createClient } = supabase;
+const sb = createClient(SUPA_URL, SUPA_KEY);
+
+// ═══ PRODUCT CONFIG ═══
+const PRODUCTS = [
+  { id:'zx_core',      name:'ZX CORE',      price:65000,  defaultSlot:2 },
+  { id:'zx_apex',      name:'ZX APEX',      price:155000, defaultSlot:2 },
+  { id:'zx_exclusive', name:'ZX EXCLUSIVE', price:215000, defaultSlot:4 },
+  { id:'cyber_pro',    name:'CYBER PRO',    price:150000, defaultSlot:2 },
+  { id:'insanity_max', name:'INSANITY MAX', price:350000, defaultSlot:2 },
+];
+function fmtRp(n){ return 'Rp '+Math.round(n).toLocaleString('id-ID'); }
+function fmtDate(s){ if(!s)return '-'; return new Date(s).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'2-digit'}); }
+function gi(id){ return document.getElementById(id); }
+
+// ═══ STATE ═══
+let currentUser  = null;
+let resellerData = null;
+let inventory    = {};
+let transactions = [];
+let licenses     = [];
+let selectedProd = null;
+
+// ═══ AUTH ═══
+async function doLogin(){
+  const email = gi('li-email').value.trim();
+  const pass  = gi('li-pass').value;
+  gi('li-msg').textContent = '';
+  gi('li-btn').textContent = 'Memuat...';
+  gi('li-btn').disabled = true;
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  gi('li-btn').textContent = 'MASUK'; gi('li-btn').disabled = false;
+
+  if(error){ gi('li-msg').textContent = error.message; return; }
+
+  // Fetch reseller profile
+  const { data: rData, error: rErr } = await sb
+    .from('resellers').select('*').eq('user_id', data.user.id).single();
+
+  if(rErr || !rData){ gi('li-msg').textContent = 'Akun reseller tidak ditemukan.'; await sb.auth.signOut(); return; }
+  if(rData.status === 'suspended'){ gi('li-msg').textContent = 'Akun kamu telah disuspend.'; await sb.auth.signOut(); return; }
+
+  currentUser  = data.user;
+  resellerData = rData;
+  initApp();
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  currentUser = resellerData = null;
+  gi('app').style.display = 'none';
+  gi('login-page').style.display = 'flex';
+}
+
+// Check existing session
+sb.auth.getSession().then(async ({ data }) => {
+  if(!data.session) return;
+  currentUser = data.session.user;
+  const { data: rData } = await sb.from('resellers').select('*').eq('user_id', currentUser.id).single();
+  if(!rData || rData.status === 'suspended'){ await sb.auth.signOut(); return; }
+  resellerData = rData;
+  initApp();
+});
+
+// ═══ INIT APP ═══
+function initApp(){
+  gi('login-page').style.display = 'none';
+  gi('app').style.display = 'block';
+  gi('tb-uname').textContent = resellerData.username || resellerData.email;
+  gi('tb-av').textContent = (resellerData.username || 'R')[0].toUpperCase();
+  loadAll();
+}
+
+async function loadAll(){
+  await loadInventory();
+  await loadTransactions();
+  await loadLicenses();
+  renderDashboard();
+  renderInventoryPage();
+  renderTransactions();
+  renderLicenses();
+  renderAccount();
+  renderGenProducts();
+}
+
+// ═══ DATA LOADING ═══
+async function loadInventory(){
+  const { data } = await sb.from('reseller_inventory')
+    .select('*').eq('reseller_id', resellerData.id);
+  inventory = {};
+  if(data) data.forEach(r => inventory[r.product_id] = r);
+}
+
+async function loadTransactions(){
+  const { data } = await sb.from('reseller_transactions')
+    .select('*').eq('reseller_id', resellerData.id)
+    .order('created_at', { ascending: false }).limit(100);
+  transactions = data || [];
+}
+
+async function loadLicenses(){
+  const { data } = await sb.from('reseller_licenses')
+    .select('*').eq('reseller_id', resellerData.id)
+    .order('created_at', { ascending: false }).limit(100);
+  licenses = data || [];
+}
+
+// ═══ RENDER DASHBOARD ═══
+function renderDashboard(){
+  let total=0, used=0;
+  PRODUCTS.forEach(p => {
+    const inv = inventory[p.id] || { allocated:0, used:0 };
+    total += inv.allocated || 0;
+    used  += inv.used      || 0;
+  });
+  gi('dash-total-slot').textContent = total;
+  gi('dash-used-slot').textContent  = used;
+  gi('dash-rem-slot').textContent   = total - used;
+  gi('dash-trx').textContent        = transactions.length;
+
+  // Mini inventory grid
+  const grid = gi('dash-inv-grid');
+  grid.innerHTML = PRODUCTS.map(p => {
+    const inv = inventory[p.id] || { allocated:0, used:0 };
+    const rem  = (inv.allocated||0) - (inv.used||0);
+    const pct  = inv.allocated ? Math.round((inv.used||0)/inv.allocated*100) : 0;
+    const cls  = pct>80?'danger':pct>50?'warn':'';
+    return `<div class="inv-card">
+      <div class="inv-name">${p.name}</div>
+      <div class="inv-row"><span class="inv-lbl">Allocated</span><span class="inv-val">${inv.allocated||0}</span></div>
+      <div class="inv-row"><span class="inv-lbl">Used</span><span class="inv-val">${inv.used||0}</span></div>
+      <div class="inv-row"><span class="inv-lbl">Remaining</span><span class="inv-val" style="color:${rem>0?'var(--grn)':'var(--rose)'};">${rem}</span></div>
+      <div class="inv-bar"><div class="inv-fill ${cls}" style="width:${pct}%;"></div></div>
+      <div class="inv-price">${fmtRp(p.price)} / key</div>
+    </div>`;
+  }).join('');
+
+  // Recent trx
+  const tbody = gi('dash-trx-tbody');
+  const rows  = transactions.slice(0,5);
+  tbody.innerHTML = rows.length
+    ? rows.map(t => `<tr>
+        <td>${fmtDate(t.created_at)}</td>
+        <td><span class="badge badge-info">${t.product_name||'-'}</span></td>
+        <td style="color:var(--t2);">${t.buyer_email||'-'}</td>
+        <td><span class="badge ${t.email_sent?'badge-ok':'badge-warn'}">${t.email_sent?'Terkirim':'Pending'}</span></td>
+      </tr>`).join('')
+    : '<tr><td colspan="4" style="text-align:center;color:var(--t3);padding:20px;">Belum ada transaksi</td></tr>';
+}
+
+// ═══ RENDER INVENTORY ═══
+function renderInventoryPage(){
+  const grid = gi('inv-grid-full');
+  grid.innerHTML = PRODUCTS.map(p => {
+    const inv = inventory[p.id] || { allocated:0, used:0 };
+    const rem  = (inv.allocated||0) - (inv.used||0);
+    const pct  = inv.allocated ? Math.round((inv.used||0)/inv.allocated*100) : 0;
+    const cls  = pct>80?'danger':pct>50?'warn':'';
+    return `<div class="inv-card" style="border-radius:14px;padding:20px;">
+      <div class="inv-name">${p.name}</div>
+      <div class="inv-row" style="margin-bottom:8px;"><span class="inv-lbl">Harga</span><span style="font-size:9px;font-weight:700;color:var(--sky);">${fmtRp(p.price)}</span></div>
+      <div style="height:1px;background:var(--bdr3);margin:10px 0;"></div>
+      <div class="inv-row"><span class="inv-lbl">Allocated</span><span class="inv-val">${inv.allocated||0}</span></div>
+      <div class="inv-row"><span class="inv-lbl">Used</span><span class="inv-val">${inv.used||0}</span></div>
+      <div class="inv-row"><span class="inv-lbl">Remaining</span><span class="inv-val" style="color:${rem>0?'var(--grn)':'var(--rose)'};">${rem}</span></div>
+      <div class="inv-bar" style="height:5px;margin-top:12px;"><div class="inv-fill ${cls}" style="width:${pct}%;height:5px;"></div></div>
+      <div style="font-size:7.5px;color:var(--t3);margin-top:6px;text-align:right;">${pct}% terpakai</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══ RENDER GENERATE ═══
+function renderGenProducts(){
+  const grid = gi('gen-prod-grid');
+  grid.innerHTML = PRODUCTS.map(p => {
+    const inv = inventory[p.id] || { allocated:0, used:0 };
+    const rem  = (inv.allocated||0) - (inv.used||0);
+    const dis  = rem <= 0 ? 'disabled' : '';
+    return `<div class="prod-opt ${dis}" id="popt-${p.id}" onclick="selectProd('${p.id}')">
+      <div class="prod-opt-name">${p.name}</div>
+      <div class="prod-opt-price">${fmtRp(p.price)}</div>
+      <div class="prod-opt-slot">${rem} slot tersisa</div>
+    </div>`;
+  }).join('');
+}
+
+function selectProd(id){
+  const inv = inventory[id] || { allocated:0, used:0 };
+  if((inv.allocated||0)-(inv.used||0) <= 0){ toast('Slot habis untuk produk ini','w'); return; }
+  selectedProd = id;
+  document.querySelectorAll('.prod-opt').forEach(el => el.classList.remove('selected'));
+  const el = gi('popt-'+id); if(el) el.classList.add('selected');
+}
+
+// ═══ GENERATE LICENSE ═══
+async function doGenerate(){
+  if(!selectedProd){ toast('Pilih produk terlebih dahulu','w'); return; }
+  const email = gi('gen-email').value.trim();
+  if(!email || !email.includes('@')){ toast('Masukkan email pembeli yang valid','w'); return; }
+
+  const btn = gi('gen-btn');
+  btn.textContent = 'Memproses...'; btn.disabled = true;
+
+  const inv = inventory[selectedProd] || {};
+  const rem  = (inv.allocated||0)-(inv.used||0);
+  if(rem<=0){ toast('Slot habis!','e'); btn.textContent='Generate & Kirim'; btn.disabled=false; return; }
+
+  const prod    = PRODUCTS.find(p=>p.id===selectedProd);
+  const key     = generateKeyStr(prod.name);
+  const durVal  = parseInt(gi('gen-dur').value)||null;
+  const durUnit = gi('gen-dur-unit').value;
+  let expiresAt = null;
+  if(durVal){
+    const d = new Date();
+    if(durUnit==='days')   d.setDate(d.getDate()+durVal);
+    if(durUnit==='months') d.setMonth(d.getMonth()+durVal);
+    if(durUnit==='years')  d.setFullYear(d.getFullYear()+durVal);
+    expiresAt = d.toISOString().slice(0,19); // format APK-compatible
+  }
+
+  // 1. Insert to licenses table (Supabase — same as admin)
+  const { error: licErr } = await sb.from('licenses').insert({
+    key:        key,
+    project:    prod.name,
+    active:     true,
+    used:       false,
+    status:     'available',
+    expires_at: expiresAt,
+  });
+  if(licErr){ toast('Gagal simpan license: '+licErr.message,'e'); btn.textContent='Generate & Kirim'; btn.disabled=false; return; }
+
+  // 2. Insert transaction record
+  await sb.from('reseller_transactions').insert({
+    reseller_id:  resellerData.id,
+    product_id:   selectedProd,
+    product_name: prod.name,
+    buyer_email:  email,
+    license_key:  key,
+    amount:       prod.price,
+    email_sent:   false,
+    created_at:   new Date().toISOString(),
+  });
+
+  // 3. Insert to reseller_licenses
+  await sb.from('reseller_licenses').insert({
+    reseller_id:  resellerData.id,
+    license_key:  key,
+    product_id:   selectedProd,
+    product_name: prod.name,
+    buyer_email:  email,
+    expires_at:   expiresAt,
+    created_at:   new Date().toISOString(),
+  });
+
+  // 4. Decrement slot
+  await sb.from('reseller_inventory').update({ used: (inv.used||0)+1 })
+    .eq('reseller_id', resellerData.id).eq('product_id', selectedProd);
+
+  // 5. Send email (Railway endpoint — if available)
+  let emailSent = false;
+  try {
+    const emailRes = await fetch(SUPA_URL+'/functions/v1/send-license', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+      body: JSON.stringify({ to: email, key, product: prod.name, expires_at: expiresAt })
+    });
+    emailSent = emailRes.ok;
+    if(emailSent){
+      await sb.from('reseller_transactions').update({ email_sent:true })
+        .eq('reseller_id', resellerData.id).eq('license_key', key);
+    }
+  } catch(_){}
+
+  // 6. Show success
+  const content = `<div style="margin-bottom:6px;"><span style="color:var(--t2);">Produk: </span>${prod.name}</div>
+<div style="margin-bottom:6px;"><span style="color:var(--t2);">License Key: </span><b style="color:var(--sky2);user-select:all;">${key}</b></div>
+<div style="margin-bottom:6px;"><span style="color:var(--t2);">Email: </span>${email}</div>
+<div style="margin-bottom:6px;"><span style="color:var(--t2);">Expires: </span>${expiresAt||'Permanent'}</div>
+<div><span style="color:var(--t2);">Email: </span><span style="color:${emailSent?'var(--grn)':'var(--gold)'}">${emailSent?'Terkirim':'Pending (manual)'}</span></div>`;
+
+  gi('modal-gen-content').innerHTML = content;
+  gi('modal-gen-ok').classList.add('vis');
+  toast('License berhasil dibuat!','s');
+
+  // Reset form
+  gi('gen-email').value = ''; gi('gen-dur').value = ''; selectedProd = null;
+  document.querySelectorAll('.prod-opt').forEach(el => el.classList.remove('selected'));
+  btn.textContent = 'Generate & Kirim'; btn.disabled = false;
+
+  // Reload
+  await loadAll();
+}
+
+function generateKeyStr(productName){
+  const prefix = productName.replace(/\s+/g,'').substring(0,4).toUpperCase();
+  const rand = () => Math.random().toString(36).substring(2,7).toUpperCase();
+  return `${prefix}-${rand()}-${rand()}-${rand()}`;
+}
+
+// ═══ RENDER TRANSACTIONS ═══
+function renderTransactions(){
+  const tbody = gi('trx-tbody');
+  tbody.innerHTML = transactions.length
+    ? transactions.map(t => `<tr>
+        <td>${fmtDate(t.created_at)}</td>
+        <td><span class="badge badge-info">${t.product_name||'-'}</span></td>
+        <td style="color:var(--t2);font-size:8.5px;">${t.buyer_email||'-'}</td>
+        <td style="font-size:8px;user-select:all;color:var(--sky2);">${t.license_key||'-'}</td>
+        <td><span class="badge ${t.email_sent?'badge-ok':'badge-warn'}">${t.email_sent?'Terkirim':'Pending'}</span></td>
+        <td><span class="badge badge-ok">Selesai</span></td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" style="text-align:center;color:var(--t3);padding:24px;">Belum ada transaksi</td></tr>';
+}
+
+// ═══ RENDER LICENSES ═══
+function renderLicenses(){
+  const tbody = gi('lic-tbody');
+  tbody.innerHTML = licenses.length
+    ? licenses.map(l => `<tr>
+        <td>${fmtDate(l.created_at)}</td>
+        <td><span class="badge badge-info">${l.product_name||'-'}</span></td>
+        <td style="font-size:8px;user-select:all;color:var(--sky2);">${l.license_key||'-'}</td>
+        <td style="color:var(--t2);font-size:8.5px;">${l.buyer_email||'-'}</td>
+        <td style="font-size:8px;color:var(--t3);">${l.device_id ? '...'+l.device_id.slice(-6) : '-'}</td>
+        <td><span class="badge badge-ok">Aktif</span></td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" style="text-align:center;color:var(--t3);padding:24px;">Belum ada license</td></tr>';
+}
+
+// ═══ RENDER ACCOUNT ═══
+function renderAccount(){
+  if(!resellerData) return;
+  const rows = [
+    ['Username',  resellerData.username||'-'],
+    ['Email',     resellerData.email||'-'],
+    ['Status',    `<span class="badge ${resellerData.status==='active'?'badge-ok':'badge-err'}">${resellerData.status||'active'}</span>`],
+    ['Member Sejak', fmtDate(resellerData.created_at)],
+  ];
+  gi('acc-info').innerHTML = rows.map(([l,v]) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bdr3);">
+      <span style="font-size:8.5px;color:var(--t2);letter-spacing:.1em;text-transform:uppercase;">${l}</span>
+      <span style="font-size:10px;font-weight:600;">${v}</span>
+    </div>`).join('');
+}
+
+// ═══ NAVIGATION ═══
+function navTo(page){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pageEl = gi('page-'+page); if(pageEl) pageEl.classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ═══ MODAL ═══
+function closeModal(id){ gi(id).classList.remove('vis'); }
+
+// ═══ TOAST ═══
+function toast(msg, type='s', dur=3000){
+  const el = document.createElement('div');
+  el.className = 'toast-msg t-'+type;
+  el.textContent = msg;
+  gi('toast').appendChild(el);
+  setTimeout(() => el.remove(), dur);
+}
+
+// Enter key login
+gi('li-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>
