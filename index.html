@@ -448,53 +448,81 @@ function genKey(){
   return 'MDZZ-'+seg(4)+'-'+seg(4)+'-'+seg(4);
 }
 
-/* ═══ RAILWAY — load & send product ═══ */
-var productFiles=[];
+/* ═══ RAILWAY — send product ═══ */
+/* File nama mapping dari Supabase Storage bucket 'products' */
+var PRODUCT_FILES = {
+  'zx_core':      'zx-core.zip',
+  'zx_apex':      'zx-apex.zip',
+  'zx_exclusive': 'zx-exclusive.zip',
+  'cyber_pro':    'cyber-pro.zip',
+  'insanity_max': 'insanity-max.zip'
+};
+var productFiles = [];
+
+/* Load file list dari Supabase Storage langsung */
 function loadProductFiles(){
   var sel = gi('gen-file');
-  fetch(RAILWAY_URL+'/api/products',{headers:{'X-Admin-Key':ADMIN_KEY}})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      productFiles = d.files||[];
-      if(sel){
-        if(!productFiles.length){
-          sel.innerHTML='<option value="">Tidak ada file — upload via admin</option>';
-          return;
-        }
-        sel.innerHTML='<option value="">-- Pilih file --</option>'+
-          productFiles.map(function(f){
-            return '<option value="'+f+'">'+f+'</option>';
-          }).join('');
-        /* Auto-select file berdasarkan produk yang dipilih */
-        autoSelectFile();
-      }
-    })
-    .catch(function(e){
-      console.warn('loadProductFiles:',e.message);
-      if(sel)sel.innerHTML='<option value="">Gagal load file (cek Railway)</option>';
-    });
+
+  /* Coba load dari Supabase Storage */
+  fetch(SUPA_URL+'/storage/v1/object/list/products', {
+    method: 'POST',
+    headers: {
+      'apikey':        SUPA_KEY,
+      'Authorization': 'Bearer '+SUPA_KEY,
+      'Content-Type':  'application/json'
+    },
+    body: JSON.stringify({prefix:'', limit:100, offset:0})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(files){
+    /* Supabase returns array of {name, ...} objects */
+    productFiles = files.filter(function(f){return f&&f.name;}).map(function(f){return f.name;});
+    console.log('[RS] Supabase Storage files:', productFiles);
+    if(!productFiles.length){
+      /* Fallback ke hardcoded mapping */
+      productFiles = Object.values(PRODUCT_FILES);
+      console.log('[RS] Using hardcoded files:', productFiles);
+    }
+    populateFileSelect(sel);
+  })
+  .catch(function(e){
+    console.warn('[RS] Storage load error:', e.message);
+    /* Fallback ke hardcoded */
+    productFiles = Object.values(PRODUCT_FILES);
+    populateFileSelect(sel);
+  });
+}
+
+function populateFileSelect(sel){
+  if(!sel) return;
+  sel.innerHTML = '<option value="">-- Pilih file --</option>' +
+    productFiles.map(function(f){
+      return '<option value="'+f+'">'+f+'</option>';
+    }).join('');
+  autoSelectFile();
 }
 
 function autoSelectFile(){
-  if(!SEL||!productFiles.length)return;
-  var prod = PRODS.find(function(p){return p.id===SEL;});
-  if(!prod)return;
-  var match = findFile(prod.name);
+  if(!SEL) return;
+  var fileName = PRODUCT_FILES[SEL];
+  /* Cari di productFiles yang sudah loaded */
+  if(!fileName && productFiles.length){
+    var prod = PRODS.find(function(p){return p.id===SEL;});
+    if(prod){
+      var nd = prod.name.toLowerCase().replace(/\s+/g,'-');
+      fileName = productFiles.find(function(f){
+        return f.toLowerCase().includes(nd) || f.toLowerCase().replace(/[_\s]+/g,'-').includes(nd);
+      }) || productFiles[0];
+    }
+  }
   var sel = gi('gen-file');
-  if(sel&&match){
+  if(sel && fileName){
     for(var i=0;i<sel.options.length;i++){
-      if(sel.options[i].value===match){sel.selectedIndex=i;break;}
+      if(sel.options[i].value===fileName){sel.selectedIndex=i;break;}
     }
   }
 }
-function findFile(productName){
-  var n=productName.toLowerCase().replace(/\s+/g,'');
-  var nd=productName.toLowerCase().replace(/\s+/g,'-');
-  return productFiles.find(function(f){
-    var fl=f.toLowerCase();
-    return fl.includes(n)||fl.includes(nd)||fl.includes(n.slice(0,5));
-  })||productFiles[0]||null;
-}
+
 async function sendProductWithFile(buyerEmail,productName,licenseKey,senderName,fileName){
   console.log('[RS] sendProduct payload:', {buyerEmail,productName,licenseKey,fileName,senderName});
   var res=await fetch(RAILWAY_URL+'/api/send-product',{
