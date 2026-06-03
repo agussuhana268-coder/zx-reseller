@@ -331,6 +331,13 @@ tr:last-child td{border-bottom:none;}
         <div class="div"></div>
         <div class="fg"><label class="fl">Email Pembeli</label><input class="fi" id="gen-email" type="email" placeholder="pembeli@email.com"/></div>
         <div class="fg">
+          <label class="fl">File Produk (dari Railway storage)</label>
+          <select class="fs" id="gen-file">
+            <option value="">Memuat file...</option>
+          </select>
+          <div id="gen-file-hint" style="font-size:7.5px;color:var(--t3);margin-top:4px;">File ini yang akan dikirim ke pembeli via email</div>
+        </div>
+        <div class="fg">
           <label class="fl">Durasi (opsional — kosong = permanent)</label>
           <div class="fr">
             <input class="fi" id="gen-dur" type="number" min="1" placeholder="Kosong = permanent"/>
@@ -444,10 +451,41 @@ function genKey(){
 /* ═══ RAILWAY — load & send product ═══ */
 var productFiles=[];
 function loadProductFiles(){
+  var sel = gi('gen-file');
   fetch(RAILWAY_URL+'/api/products',{headers:{'X-Admin-Key':ADMIN_KEY}})
     .then(function(r){return r.json();})
-    .then(function(d){productFiles=d.files||[];})
-    .catch(function(e){console.warn('loadProductFiles:',e.message);});
+    .then(function(d){
+      productFiles = d.files||[];
+      if(sel){
+        if(!productFiles.length){
+          sel.innerHTML='<option value="">Tidak ada file — upload via admin</option>';
+          return;
+        }
+        sel.innerHTML='<option value="">-- Pilih file --</option>'+
+          productFiles.map(function(f){
+            return '<option value="'+f+'">'+f+'</option>';
+          }).join('');
+        /* Auto-select file berdasarkan produk yang dipilih */
+        autoSelectFile();
+      }
+    })
+    .catch(function(e){
+      console.warn('loadProductFiles:',e.message);
+      if(sel)sel.innerHTML='<option value="">Gagal load file (cek Railway)</option>';
+    });
+}
+
+function autoSelectFile(){
+  if(!SEL||!productFiles.length)return;
+  var prod = PRODS.find(function(p){return p.id===SEL;});
+  if(!prod)return;
+  var match = findFile(prod.name);
+  var sel = gi('gen-file');
+  if(sel&&match){
+    for(var i=0;i<sel.options.length;i++){
+      if(sel.options[i].value===match){sel.selectedIndex=i;break;}
+    }
+  }
 }
 function findFile(productName){
   var n=productName.toLowerCase().replace(/\s+/g,'');
@@ -457,18 +495,24 @@ function findFile(productName){
     return fl.includes(n)||fl.includes(nd)||fl.includes(n.slice(0,5));
   })||productFiles[0]||null;
 }
-async function sendProduct(buyerEmail,productName,licenseKey,senderName){
+async function sendProductWithFile(buyerEmail,productName,licenseKey,senderName,fileName){
+  console.log('[RS] sendProduct payload:', {buyerEmail,productName,licenseKey,fileName,senderName});
   var res=await fetch(RAILWAY_URL+'/api/send-product',{
     method:'POST',
     headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
     body:JSON.stringify({
-      buyerEmail:buyerEmail,productName:productName,
-      licenseKey:licenseKey,fileName:findFile(productName),
-      senderName:senderName||'Reseller'
+      buyerEmail:  buyerEmail,
+      productName: productName,
+      licenseKey:  licenseKey,
+      fileName:    fileName,
+      senderName:  senderName||'Reseller'
     })
   });
-  var d=await res.json();
-  if(!res.ok||!d.success)throw new Error(d.message||'Delivery gagal');
+  var body = await res.text();
+  console.log('[RS] send-product response:', res.status, body);
+  var d;
+  try{d=JSON.parse(body);}catch(e){throw new Error('Response tidak valid: '+body.slice(0,100));}
+  if(!res.ok||!d.success)throw new Error(d.message||'HTTP '+res.status);
   return d;
 }
 
@@ -664,6 +708,7 @@ function selProd(id){
   SEL=id;
   document.querySelectorAll('.po').forEach(function(el){el.classList.remove('sel');});
   var el=gi('po-'+id);if(el)el.classList.add('sel');
+  autoSelectFile();
 }
 
 /* TRANSACTIONS */
@@ -807,9 +852,13 @@ async function doGenerate(){
       .eq('product_id',SEL);
 
     /* 5. Kirim produk + license via Railway */
+    var selFile  = gi('gen-file');
+    var fileName = selFile ? selFile.value : null;
+    console.log('[RS] Sending with fileName:', fileName);
     var emailSent=false;
     try{
-      await sendProduct(email,prod.name,key,RS.username||RS.email);
+      if(!fileName){throw new Error('Pilih file produk terlebih dahulu');}
+      await sendProductWithFile(email,prod.name,key,RS.username||RS.email,fileName);
       emailSent=true;
       await sb.from('reseller_transactions')
         .update({email_sent:true})
@@ -826,7 +875,9 @@ async function doGenerate(){
         '<b style="color:var(--sky2);user-select:all;font-size:11px;">'+key+'</b></div>'+
       '<div style="margin-top:8px;"><span style="color:var(--t2);">Email Pembeli</span><br>'+email+'</div>'+
       '<div style="margin-top:8px;"><span style="color:var(--t2);">Expires</span><br>'+(expiresAt||'Permanent')+'</div>'+
-      '<div style="margin-top:8px;"><span style="color:var(--t2);">Email Produk</span><br>'+
+      '<div style="margin-top:8px;"><span style="color:var(--t2);">File Dikirim</span><br>'+
+        '<span style="color:var(--sky2);font-size:8px;">'+fileName+'</span></div>'+
+      '<div style="margin-top:8px;"><span style="color:var(--t2);">Email Produk</span><br>'+'
         '<span style="color:'+(emailSent?'var(--grn)':'var(--gold)');+'">'+
         (emailSent?'✓ Terkirim':'⚠ Gagal — kirim manual')+'</span></div>';
     gi('mo-ok').classList.add('vis');
@@ -835,6 +886,7 @@ async function doGenerate(){
     /* Reset form */
     gi('gen-email').value='';gi('gen-dur').value='';
     SEL=null;document.querySelectorAll('.po').forEach(function(el){el.classList.remove('sel');});
+    var gf=gi('gen-file');if(gf)gf.selectedIndex=0;
     btn.disabled=false;btn.textContent='Generate & Kirim';
     await fetchInv();renderDash();renderInv();renderGenProds();
     await fetchTrx();renderTrx();
