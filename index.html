@@ -974,24 +974,49 @@ async function submitCreateReseller(){
     });
 
     /* 1. Buat akun Auth Supabase */
+    var uid = null;
     var signupRes = await sbTemp.auth.signUp({ email: email, password: pass });
 
     if(signupRes.error){
-      /* Jika email sudah ada di Auth */
-      if(signupRes.error.message.toLowerCase().includes('already')||
-         signupRes.error.message.toLowerCase().includes('exist')){
-        errEl.textContent = 'Email sudah terdaftar di Supabase Auth.';
+      var isExist = signupRes.error.message.toLowerCase().includes('already') ||
+                   signupRes.error.message.toLowerCase().includes('exist') ||
+                   signupRes.error.status === 422;
+      if(isExist){
+        /* Email sudah ada di Auth — coba login sementara untuk ambil user_id */
+        gi('cr-btn').textContent='Email ada, ambil user_id...';
+        var signinRes = await sbTemp.auth.signInWithPassword({email:email,password:pass});
+        if(signinRes.error){
+          errEl.textContent='Email sudah ada di Auth tapi password salah, atau akun ini sudah punya profil reseller. Cek password.';
+          gi('cr-btn').disabled=false;gi('cr-btn').textContent='Buat Reseller';
+          return;
+        }
+        uid = signinRes.data.user ? signinRes.data.user.id : null;
+        if(!uid){
+          errEl.textContent='Gagal ambil user_id. Hubungi developer.';
+          gi('cr-btn').disabled=false;gi('cr-btn').textContent='Buat Reseller';
+          return;
+        }
+        /* Cek apakah profil reseller sudah ada */
+        var existCheck = await sb.from('resellers').select('id,username').eq('user_id',uid).maybeSingle();
+        if(existCheck.data){
+          errEl.textContent='Reseller dengan email ini sudah ada: "'+existCheck.data.username+'". Tidak perlu dibuat ulang.';
+          gi('cr-btn').disabled=false;gi('cr-btn').textContent='Buat Reseller';
+          return;
+        }
+        /* Auth ada tapi profil belum — lanjut buat profil */
+        gi('cr-btn').textContent='Membuat profil...';
       } else {
-        errEl.textContent = 'Auth error: ' + signupRes.error.message;
+        errEl.textContent='Auth error: '+signupRes.error.message;
+        gi('cr-btn').disabled=false;gi('cr-btn').textContent='Buat Reseller';
+        return;
       }
-      gi('cr-btn').disabled=false; gi('cr-btn').textContent='Buat Reseller';
-      return;
+    } else {
+      uid = signupRes.data.user ? signupRes.data.user.id : null;
     }
 
-    var uid = signupRes.data.user ? signupRes.data.user.id : null;
     if(!uid){
-      errEl.textContent='Gagal mendapat user_id dari Auth. Cek apakah email sudah ada.';
-      gi('cr-btn').disabled=false; gi('cr-btn').textContent='Buat Reseller';
+      errEl.textContent='Gagal mendapat user_id dari Auth.';
+      gi('cr-btn').disabled=false;gi('cr-btn').textContent='Buat Reseller';
       return;
     }
 
