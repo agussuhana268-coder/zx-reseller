@@ -15,29 +15,29 @@
   --cyan:#06b6d4;--grn:#10b981;--gold:#f59e0b;--rose:#f43f5e;--purple:#818cf8;
   --bdr:rgba(56,189,248,.12);--bdr2:rgba(56,189,248,.2);--bdr3:rgba(56,189,248,.05);
   --t1:#e2f4ff;--t2:#6288aa;--t3:#1e3a5a;--t4:#a0c8e8;
-  --sb:240px;--nav:56px;
+  --sb:240px;--nav:56px;--bot:64px;
   --mono:'JetBrains Mono',monospace;
   --hud:'Orbitron',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(56,189,248,.2);border-radius:4px}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:rgba(56,189,248,.2);border-radius:4px}
+html,body{height:100%;}
 body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 60% 40% at 80% 10%,rgba(37,99,235,.08) 0%,transparent 60%),
              radial-gradient(ellipse 40% 50% at 10% 90%,rgba(6,182,212,.05) 0%,transparent 55%);}
 button{cursor:pointer;border:none;outline:none;font-family:var(--mono);}
-input,select{font-family:var(--mono);outline:none;color:var(--t1);}
+input,select,textarea{font-family:var(--mono);outline:none;color:var(--t1);}
 
-/* ═══ LOGIN ═══ */
-#pg-login{
-  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-  background:var(--bg);z-index:9999;
-}
+/* ══════════════════════════════════
+   LOGIN
+══════════════════════════════════ */
+#pg-login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:9999;padding:20px;}
 .lc{width:100%;max-width:360px;background:var(--card);border:1px solid var(--bdr);border-radius:18px;padding:34px 28px;position:relative;z-index:1;}
 .lc::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.3),transparent);}
-.l-logo{text-align:center;margin-bottom:28px;}
+.l-logo{text-align:center;margin-bottom:26px;}
 .l-hex{width:52px;height:52px;margin:0 auto 12px;position:relative;display:flex;align-items:center;justify-content:center;}
-.l-hex-svg{position:absolute;inset:0;width:100%;height:100%;}
+.l-hex svg{position:absolute;inset:0;width:100%;height:100%;}
 .l-initial{font-family:var(--hud);font-size:18px;font-weight:700;color:var(--sky2);position:relative;z-index:2;}
 .l-title{font-family:var(--hud);font-size:13px;font-weight:700;color:var(--sky2);letter-spacing:2px;}
 .l-sub{font-size:8px;color:var(--t2);letter-spacing:2px;margin-top:3px;}
@@ -48,48 +48,68 @@ input,select{font-family:var(--mono);outline:none;color:var(--t1);}
 .l-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--b1),var(--sky));border-radius:10px;color:#fff;font-family:var(--hud);font-size:10px;font-weight:700;letter-spacing:2px;margin-top:14px;transition:opacity .18s;}
 .l-btn:hover{opacity:.88;}
 .l-btn:disabled{opacity:.5;cursor:not-allowed;}
-.l-err{font-size:9px;color:var(--rose);min-height:16px;margin-top:10px;text-align:center;line-height:1.5;}
+.l-err{font-size:9px;color:var(--rose);min-height:16px;margin-top:10px;text-align:center;}
 
-/* ═══ APP LAYOUT ═══ */
-#pg-app{display:none;}
-.topbar{position:fixed;top:0;left:0;right:0;height:var(--nav);background:rgba(6,13,26,.94);border-bottom:1px solid var(--bdr3);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:200;backdrop-filter:blur(12px);}
+/* ══════════════════════════════════
+   APP LAYOUT
+══════════════════════════════════ */
+#pg-app{display:none;min-height:100vh;}
+
+/* Topbar */
+.topbar{position:fixed;top:0;left:0;right:0;height:var(--nav);background:rgba(6,13,26,.94);border-bottom:1px solid var(--bdr3);display:flex;align-items:center;justify-content:space-between;padding:0 16px 0 20px;z-index:200;backdrop-filter:blur(12px);}
+.tb-left{display:flex;align-items:center;gap:10px;}
 .tb-brand{font-family:var(--hud);font-size:11px;font-weight:700;color:var(--sky2);letter-spacing:1.5px;}
-.tb-brand span{color:var(--t3);font-size:8px;font-weight:400;letter-spacing:1px;margin-left:8px;}
-.tb-right{display:flex;align-items:center;gap:9px;}
-.tb-user{display:flex;align-items:center;gap:8px;background:rgba(56,189,248,.05);border:1px solid var(--bdr);border-radius:8px;padding:6px 12px;}
-.tb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--b1),var(--sky));display:flex;align-items:center;justify-content:center;font-family:var(--hud);font-size:11px;color:#fff;flex-shrink:0;}
-.tb-uname{font-size:10px;color:var(--t1);font-weight:600;}
+.tb-brand span{color:var(--t3);font-size:8px;font-weight:400;letter-spacing:1px;margin-left:6px;}
+.tb-owner-badge{font-size:7px;letter-spacing:.12em;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--gold);padding:2px 8px;border-radius:3px;text-transform:uppercase;display:none;}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.tb-user{display:flex;align-items:center;gap:7px;background:rgba(56,189,248,.05);border:1px solid var(--bdr);border-radius:8px;padding:5px 10px;}
+.tb-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--b1),var(--sky));display:flex;align-items:center;justify-content:center;font-family:var(--hud);font-size:10px;color:#fff;flex-shrink:0;}
+.tb-uname{font-size:9.5px;color:var(--t1);font-weight:600;}
 .tb-role{font-size:7px;color:var(--sky);letter-spacing:.1em;text-transform:uppercase;}
-.btn-out{padding:6px 13px;background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.18);border-radius:7px;font-size:8px;color:var(--rose);letter-spacing:.1em;transition:all .15s;}
+.btn-out{padding:5px 11px;background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.18);border-radius:6px;font-size:8px;color:var(--rose);letter-spacing:.1em;transition:all .15s;}
 .btn-out:hover{background:rgba(244,63,94,.14);}
 
-/* Sidebar */
-.sidebar{position:fixed;left:0;top:var(--nav);bottom:0;width:var(--sb);background:rgba(6,13,26,.96);border-right:1px solid var(--bdr3);padding:12px 8px;z-index:100;overflow-y:auto;}
+/* Desktop sidebar */
+.sidebar{position:fixed;left:0;top:var(--nav);bottom:0;width:var(--sb);background:rgba(6,13,26,.96);border-right:1px solid var(--bdr3);padding:10px 8px;z-index:100;overflow-y:auto;transition:transform .25s;}
 .sb-sec{font-family:var(--hud);font-size:6px;letter-spacing:3px;color:var(--t3);padding:12px 10px 5px;text-transform:uppercase;}
-.ni{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;cursor:pointer;margin-bottom:2px;color:var(--t2);transition:all .15s;border:1px solid transparent;}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:9px;cursor:pointer;margin-bottom:2px;color:var(--t2);transition:all .15s;border:1px solid transparent;}
 .ni:hover{background:rgba(56,189,248,.06);color:var(--t4);}
 .ni.on{background:rgba(37,99,235,.14);border-color:rgba(56,189,248,.14);color:var(--t1);}
+.ni.owner-only{display:none;}
 .ni svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
 .ni.on svg{stroke:var(--sky2);}
 .ni-lbl{font-size:9px;font-weight:500;}
 
-/* Main */
+/* Main content area */
 .main{margin-left:var(--sb);padding-top:var(--nav);}
-.pg{display:none;padding:22px 24px;}
+.pg{display:none;padding:22px 24px;min-height:calc(100vh - var(--nav));}
 .pg.on{display:block;}
 .pg-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
 .pg-title{font-family:var(--hud);font-size:17px;font-weight:700;color:var(--t1);}
 .pg-sub{font-size:8px;color:var(--t2);letter-spacing:.1em;margin-top:3px;text-transform:uppercase;}
 
+/* ══ Mobile bottom nav ══ */
+.bot-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:var(--bot);background:rgba(6,13,26,.96);border-top:1px solid var(--bdr3);backdrop-filter:blur(12px);z-index:200;padding:0 4px;}
+.bot-nav-inner{display:flex;height:100%;align-items:stretch;}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--t3);transition:all .15s;padding:4px 2px;border-radius:8px;margin:6px 2px;}
+.bn:hover{color:var(--t4);}
+.bn.on{color:var(--sky2);}
+.bn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0;}
+.bn-lbl{font-size:7px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;}
+.bn.owner-only{display:none;}
+
+/* ══════════════════════════════════
+   COMPONENTS
+══════════════════════════════════ */
 /* Stat grid */
 .sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
-@media(max-width:700px){.sg{grid-template-columns:1fr 1fr;}}
 .sc{background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:15px;position:relative;overflow:hidden;}
 .sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .sc.cb::before{background:linear-gradient(90deg,#2563eb,#3b82f6);}
 .sc.cc::before{background:linear-gradient(90deg,#06b6d4,#22d3ee);}
 .sc.cg::before{background:linear-gradient(90deg,#10b981,#34d399);}
 .sc.co::before{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+.sc.cp::before{background:linear-gradient(90deg,#818cf8,#a78bfa);}
 .sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .sc-lbl{font-size:7px;letter-spacing:.14em;color:var(--t2);text-transform:uppercase;}
 .sc-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
@@ -98,12 +118,13 @@ input,select{font-family:var(--mono);outline:none;color:var(--t1);}
 .ic-c{background:rgba(6,182,212,.1);color:var(--cyan);}
 .ic-g{background:rgba(16,185,129,.1);color:var(--grn);}
 .ic-o{background:rgba(245,158,11,.1);color:var(--gold);}
+.ic-p{background:rgba(129,140,248,.1);color:var(--purple);}
 .sc-val{font-family:var(--hud);font-size:24px;font-weight:700;color:var(--t1);line-height:1.1;}
 .sc-sub{font-size:7.5px;color:var(--t3);margin-top:3px;}
 
 /* Card */
 .card{background:var(--card);border:1px solid var(--bdr);border-radius:11px;}
-.ch{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--bdr3);}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--bdr3);flex-wrap:wrap;gap:8px;}
 .ct{font-family:var(--hud);font-size:9.5px;font-weight:700;color:var(--t1);letter-spacing:.5px;}
 .cs{font-size:7.5px;color:var(--t2);margin-top:2px;}
 .cb2{padding:14px 16px;}
@@ -135,6 +156,7 @@ tr:last-child td{border-bottom:none;}
 .wn{background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.18);}
 .er{background:rgba(244,63,94,.08);color:var(--rose);border:1px solid rgba(244,63,94,.14);}
 .info{background:rgba(14,165,233,.08);color:var(--sky);border:1px solid rgba(14,165,233,.14);}
+.pur{background:rgba(129,140,248,.08);color:var(--purple);border:1px solid rgba(129,140,248,.14);}
 
 /* Buttons */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:7px;font-size:8px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:all .15s;cursor:pointer;}
@@ -144,6 +166,9 @@ tr:last-child td{border-bottom:none;}
 .btn-p:disabled{opacity:.5;cursor:not-allowed;}
 .btn-s{background:rgba(56,189,248,.07);border:1px solid var(--bdr);color:var(--t2);}
 .btn-s:hover{background:rgba(56,189,248,.12);color:var(--t1);}
+.btn-g{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:var(--grn);}
+.btn-r{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.15);color:var(--rose);}
+.btn-o{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:var(--gold);}
 .btn-sm{padding:5px 10px;font-size:7.5px;}
 
 /* Form */
@@ -155,13 +180,13 @@ tr:last-child td{border-bottom:none;}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .div{height:1px;background:var(--bdr3);margin:14px 0;}
 
-/* Product options */
-.pog{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-bottom:14px;}
+/* Product option pills */
+.pog{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:14px;}
 .po{background:rgba(14,165,233,.03);border:1px solid var(--bdr);border-radius:9px;padding:11px;cursor:pointer;transition:all .15s;}
 .po:hover{border-color:var(--bdr2);}
 .po.sel{background:rgba(37,99,235,.11);border-color:rgba(56,189,248,.35);}
 .po.dis{opacity:.35;pointer-events:none;}
-.po-n{font-family:var(--hud);font-size:8.5px;font-weight:700;color:var(--t1);margin-bottom:3px;letter-spacing:.5px;}
+.po-n{font-family:var(--hud);font-size:8px;font-weight:700;color:var(--t1);margin-bottom:3px;letter-spacing:.5px;}
 .po.sel .po-n{color:var(--sky2);}
 .po-p{font-size:7.5px;color:var(--sky);font-weight:600;}
 .po-s{font-size:7px;color:var(--t3);margin-top:2px;}
@@ -169,45 +194,82 @@ tr:last-child td{border-bottom:none;}
 /* Modal */
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
 .mo.vis{display:flex;}
-.mo-box{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:24px;width:100%;max-width:440px;position:relative;}
+.mo-box{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:22px;width:100%;max-width:440px;position:relative;max-height:90vh;overflow-y:auto;}
 .mo-title{font-family:var(--hud);font-size:12px;font-weight:700;color:var(--t1);margin-bottom:4px;}
 .mo-sub{font-size:8px;color:var(--t2);margin-bottom:18px;}
 .mo-body{background:rgba(14,165,233,.04);border:1px solid var(--bdr);border-radius:8px;padding:14px;font-size:9px;line-height:2;}
-.mo-close{position:absolute;top:14px;right:14px;width:28px;height:28px;background:rgba(56,189,248,.07);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--t2);cursor:pointer;}
+.mo-close{position:absolute;top:12px;right:12px;width:28px;height:28px;background:rgba(56,189,248,.07);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--t2);cursor:pointer;}
 .mo-close svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
 .mo-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+.mo-err{font-size:9px;color:var(--rose);min-height:16px;margin-top:-8px;margin-bottom:8px;}
 
 /* Toast */
-#toast{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none;}
-.tm{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px 16px;font-size:9px;color:var(--t1);box-shadow:0 8px 24px rgba(0,0,0,.3);animation:tin .22s ease;min-width:200px;}
+#toast{position:fixed;bottom:80px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none;}
+.tm{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px 16px;font-size:9px;color:var(--t1);box-shadow:0 8px 24px rgba(0,0,0,.3);animation:tin .22s ease;min-width:180px;}
 .ts{border-left:3px solid var(--grn);}
 .te{border-left:3px solid var(--rose);}
 .tw2{border-left:3px solid var(--gold);}
 .ti{border-left:3px solid var(--sky);}
 @keyframes tin{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:none;}}
 
-/* Account */
+/* Account rows */
 .ar{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--bdr3);}
 .ar:last-child{border-bottom:none;}
 .al{font-size:8px;color:var(--t2);letter-spacing:.12em;text-transform:uppercase;}
-.av{font-size:10px;font-weight:600;}
+.av2{font-size:10px;font-weight:600;}
 
 /* Filter bar */
 .fb{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
-.fi-sm{background:rgba(14,165,233,.04);border:1px solid var(--bdr);border-radius:7px;padding:6px 11px;font-size:8.5px;width:190px;}
+.fi-sm{background:rgba(14,165,233,.04);border:1px solid var(--bdr);border-radius:7px;padding:6px 11px;font-size:8.5px;width:180px;}
 .fs-sm{background:var(--bg2);border:1px solid var(--bdr);border-radius:7px;padding:6px 10px;font-size:8.5px;}
 
-@media(max-width:768px){.sidebar{display:none;}.main{margin-left:0;}.pg{padding:14px;}}
+/* Owner panel - reseller card */
+.rs-card{background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:16px;margin-bottom:10px;}
+.rs-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.rs-name{font-family:var(--hud);font-size:11px;font-weight:700;color:var(--t1);}
+.rs-email{font-size:8px;color:var(--t2);margin-top:2px;}
+.rs-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.rs-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin-top:10px;}
+.rs-slot-item{background:rgba(56,189,248,.04);border:1px solid var(--bdr3);border-radius:8px;padding:8px 10px;}
+.rs-slot-name{font-size:7px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
+.rs-slot-val{font-size:14px;font-weight:700;font-family:var(--hud);color:var(--t1);}
+.rs-slot-rem{font-size:7px;color:var(--t3);margin-top:2px;}
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);pointer-events:none;}
+  .main{margin-left:0;padding-bottom:calc(var(--bot) + 8px);}
+  .bot-nav{display:block;}
+  .sg{grid-template-columns:1fr 1fr;}
+  .pg{padding:14px 12px;}
+  .pg-hd{margin-bottom:14px;}
+  .pg-title{font-size:14px;}
+  .inv-g{grid-template-columns:1fr 1fr;}
+  #toast{bottom:calc(var(--bot) + 8px);}
+  .tb-brand span{display:none;}
+  .fr{grid-template-columns:1fr;}
+  .fi-sm{width:150px;}
+  .rs-slots{grid-template-columns:repeat(3,1fr);}
+  .rs-actions{gap:4px;}
+}
+@media(max-width:420px){
+  .sg{grid-template-columns:1fr 1fr;}
+  .inv-g{grid-template-columns:1fr;}
+  .rs-slots{grid-template-columns:1fr 1fr;}
+  .pog{grid-template-columns:1fr 1fr;}
+}
 </style>
 </head>
 <body>
 
-<!-- ═══ LOGIN PAGE ═══ -->
+<!-- LOGIN -->
 <div id="pg-login">
   <div class="lc">
     <div class="l-logo">
       <div class="l-hex">
-        <svg class="l-hex-svg" viewBox="0 0 54 54" fill="none">
+        <svg viewBox="0 0 54 54" fill="none">
           <polygon points="27,2 50,14.5 50,39.5 27,52 4,39.5 4,14.5" fill="rgba(6,13,26,.9)" stroke="rgba(56,189,248,.4)" stroke-width="1.4"/>
           <polygon points="27,8 44,17.5 44,36.5 27,46 10,36.5 10,17.5" fill="none" stroke="rgba(56,189,248,.08)" stroke-width=".8"/>
         </svg>
@@ -216,104 +278,64 @@ tr:last-child td{border-bottom:none;}
       <div class="l-title">ZX RESELLER</div>
       <div class="l-sub">PANEL v1.0</div>
     </div>
-    <div class="l-field">
-      <label class="l-lbl">Email</label>
-      <input class="l-inp" id="inp-email" type="email" placeholder="reseller@email.com" autocomplete="username"/>
-    </div>
-    <div class="l-field">
-      <label class="l-lbl">Password</label>
-      <input class="l-inp" id="inp-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
-    </div>
+    <div class="l-field"><label class="l-lbl">Email</label><input class="l-inp" id="inp-email" type="email" placeholder="reseller@email.com" autocomplete="username"/></div>
+    <div class="l-field"><label class="l-lbl">Password</label><input class="l-inp" id="inp-pass" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
     <button class="l-btn" id="inp-btn" onclick="doLogin()">MASUK</button>
     <div class="l-err" id="inp-err"></div>
   </div>
 </div>
 
-<!-- ═══ APP ═══ -->
+<!-- APP -->
 <div id="pg-app">
 
+  <!-- Topbar -->
   <div class="topbar">
-    <div class="tb-brand">ZX <span>RESELLER PANEL</span></div>
+    <div class="tb-left">
+      <div class="tb-brand">ZX <span>RESELLER</span></div>
+      <span class="tb-owner-badge" id="owner-badge">OWNER</span>
+    </div>
     <div class="tb-right">
       <div class="tb-user">
         <div class="tb-av" id="av">R</div>
         <div>
           <div class="tb-uname" id="uname">—</div>
-          <div class="tb-role">Reseller</div>
+          <div class="tb-role" id="urole">Reseller</div>
         </div>
       </div>
       <button class="btn-out" onclick="doLogout()">LOGOUT</button>
     </div>
   </div>
 
-  <nav class="sidebar">
+  <!-- Desktop Sidebar -->
+  <nav class="sidebar" id="sidebar">
     <div class="sb-sec">MENU</div>
-    <div class="ni on" data-pg="dashboard" onclick="go(this,'dashboard')">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      <span class="ni-lbl">Dashboard</span>
-    </div>
-    <div class="ni" data-pg="inventory" onclick="go(this,'inventory')">
-      <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-      <span class="ni-lbl">Inventory Slot</span>
-    </div>
-    <div class="ni" data-pg="generate" onclick="go(this,'generate')">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-      <span class="ni-lbl">Generate License</span>
-    </div>
-    <div class="ni" data-pg="transactions" onclick="go(this,'transactions')">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      <span class="ni-lbl">Transaksi</span>
-    </div>
-    <div class="ni" data-pg="licenses" onclick="go(this,'licenses')">
-      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-      <span class="ni-lbl">License History</span>
-    </div>
+    <div class="ni on"  onclick="go(this,'dashboard')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="ni-lbl">Dashboard</span></div>
+    <div class="ni" onclick="go(this,'inventory')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><span class="ni-lbl">Inventory</span></div>
+    <div class="ni" onclick="go(this,'generate')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span class="ni-lbl">Generate</span></div>
+    <div class="ni" onclick="go(this,'transactions')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg><span class="ni-lbl">Transaksi</span></div>
+    <div class="ni" onclick="go(this,'licenses')"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span class="ni-lbl">Licenses</span></div>
     <div class="sb-sec">AKUN</div>
-    <div class="ni" data-pg="account" onclick="go(this,'account')">
-      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span class="ni-lbl">Akun Saya</span>
-    </div>
+    <div class="ni" onclick="go(this,'account')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="ni-lbl">Akun</span></div>
+    <div class="ni owner-only" id="sb-owner" onclick="go(this,'owner')"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="ni-lbl">Owner Panel</span></div>
   </nav>
 
+  <!-- Main -->
   <div class="main">
 
     <!-- DASHBOARD -->
     <div class="pg on" id="pg-dashboard">
       <div class="pg-hd">
         <div><div class="pg-title">Dashboard</div><div class="pg-sub">Ringkasan aktivitas</div></div>
-        <button class="btn btn-s btn-sm" onclick="loadAll()">
-          <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Refresh
-        </button>
+        <button class="btn btn-s btn-sm" onclick="loadAll()"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Refresh</button>
       </div>
       <div class="sg">
-        <div class="sc cb">
-          <div class="sc-top"><span class="sc-lbl">Total Slot</span><div class="sc-ico ic-b"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div></div>
-          <div class="sc-val" id="st-total">0</div><div class="sc-sub">Dialokasikan</div>
-        </div>
-        <div class="sc cc">
-          <div class="sc-top"><span class="sc-lbl">Slot Terpakai</span><div class="sc-ico ic-c"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-          <div class="sc-val" id="st-used">0</div><div class="sc-sub">License dibuat</div>
-        </div>
-        <div class="sc cg">
-          <div class="sc-top"><span class="sc-lbl">Sisa Slot</span><div class="sc-ico ic-g"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div></div>
-          <div class="sc-val" id="st-rem">0</div><div class="sc-sub">Tersedia</div>
-        </div>
-        <div class="sc co">
-          <div class="sc-top"><span class="sc-lbl">Transaksi</span><div class="sc-ico ic-o"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div>
-          <div class="sc-val" id="st-trx">0</div><div class="sc-sub">Total transaksi</div>
-        </div>
+        <div class="sc cb"><div class="sc-top"><span class="sc-lbl">Total Slot</span><div class="sc-ico ic-b"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div></div><div class="sc-val" id="st-total">0</div><div class="sc-sub">Dialokasikan</div></div>
+        <div class="sc cc"><div class="sc-top"><span class="sc-lbl">Terpakai</span><div class="sc-ico ic-c"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div><div class="sc-val" id="st-used">0</div><div class="sc-sub">License dibuat</div></div>
+        <div class="sc cg"><div class="sc-top"><span class="sc-lbl">Sisa Slot</span><div class="sc-ico ic-g"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div></div><div class="sc-val" id="st-rem">0</div><div class="sc-sub">Tersedia</div></div>
+        <div class="sc co"><div class="sc-top"><span class="sc-lbl">Transaksi</span><div class="sc-ico ic-o"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div><div class="sc-val" id="st-trx">0</div><div class="sc-sub">Total</div></div>
       </div>
-      <div class="card" style="margin-bottom:12px;">
-        <div class="ch"><div><div class="ct">INVENTORY RINGKASAN</div><div class="cs">Slot per produk</div></div></div>
-        <div class="cb2"><div class="inv-g" id="d-inv"></div></div>
-      </div>
-      <div class="card">
-        <div class="ch"><div class="ct">TRANSAKSI TERAKHIR</div></div>
-        <div class="tw" style="padding:0 14px 12px;">
-          <table><thead><tr><th>Tanggal</th><th>Produk</th><th>Email Pembeli</th><th>Email</th></tr></thead>
-          <tbody id="d-trx"></tbody></table>
-        </div>
-      </div>
+      <div class="card" style="margin-bottom:12px;"><div class="ch"><div><div class="ct">INVENTORY RINGKASAN</div><div class="cs">Slot per produk</div></div></div><div class="cb2"><div class="inv-g" id="d-inv"></div></div></div>
+      <div class="card"><div class="ch"><div class="ct">TRANSAKSI TERAKHIR</div></div><div class="tw" style="padding:0 14px 12px;"><table><thead><tr><th>Tanggal</th><th>Produk</th><th>Email</th><th>Email Status</th></tr></thead><tbody id="d-trx"></tbody></table></div></div>
     </div>
 
     <!-- INVENTORY -->
@@ -331,22 +353,18 @@ tr:last-child td{border-bottom:none;}
         <div class="div"></div>
         <div class="fg"><label class="fl">Email Pembeli</label><input class="fi" id="gen-email" type="email" placeholder="pembeli@email.com"/></div>
         <div class="fg">
-          <label class="fl">File Produk (dari Railway storage)</label>
-          <select class="fs" id="gen-file">
-            <option value="">Memuat file...</option>
-          </select>
-          <div id="gen-file-hint" style="font-size:7.5px;color:var(--t3);margin-top:4px;">File ini yang akan dikirim ke pembeli via email</div>
+          <label class="fl">File Produk</label>
+          <select class="fs" id="gen-file"><option value="">Memuat...</option></select>
+          <div style="font-size:7.5px;color:var(--t3);margin-top:4px;">File yang dikirim ke pembeli via email</div>
         </div>
         <div class="fg">
-          <label class="fl">Durasi (opsional — kosong = permanent)</label>
+          <label class="fl">Durasi (kosong = permanent)</label>
           <div class="fr">
             <input class="fi" id="gen-dur" type="number" min="1" placeholder="Kosong = permanent"/>
             <select class="fs" id="gen-unit"><option value="days">Hari</option><option value="months">Bulan</option><option value="years">Tahun</option></select>
           </div>
         </div>
-        <button class="btn btn-p" id="gen-btn" onclick="doGenerate()">
-          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Generate & Kirim
-        </button>
+        <button class="btn btn-p" id="gen-btn" onclick="doGenerate()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Generate & Kirim</button>
         <div id="gen-msg" style="margin-top:10px;font-size:9px;min-height:16px;"></div>
       </div>
     </div>
@@ -354,54 +372,131 @@ tr:last-child td{border-bottom:none;}
     <!-- TRANSACTIONS -->
     <div class="pg" id="pg-transactions">
       <div class="pg-hd">
-        <div><div class="pg-title">Riwayat Transaksi</div><div class="pg-sub">Semua transaksi kamu</div></div>
+        <div><div class="pg-title">Transaksi</div><div class="pg-sub">Riwayat semua transaksi</div></div>
         <div class="fb">
-          <input class="fi fi-sm" id="trx-q" placeholder="Cari email / key / produk..." oninput="renderTrx()"/>
+          <input class="fi fi-sm" id="trx-q" placeholder="Cari email / key..." oninput="renderTrx()"/>
           <select class="fs fs-sm" id="trx-prod" onchange="renderTrx()">
             <option value="">Semua Produk</option>
-            <option>ZX CORE</option><option>ZX APEX</option><option>ZX EXCLUSIVE</option>
-            <option>CYBER PRO</option><option>INSANITY MAX</option>
+            <option>ZX CORE</option><option>ZX APEX</option><option>ZX EXCLUSIVE</option><option>CYBER PRO</option><option>INSANITY MAX</option>
           </select>
           <button class="btn btn-s btn-sm" onclick="fetchTrx().then(renderTrx)">↻</button>
         </div>
       </div>
-      <div class="card">
-        <div class="tw" style="padding:0 14px 12px;">
-          <table><thead><tr><th>Tanggal</th><th>Produk</th><th>Email Pembeli</th><th>License Key</th><th>Email</th><th>Nominal</th></tr></thead>
-          <tbody id="trx-body"></tbody></table>
-        </div>
-      </div>
-      <div id="trx-pg" style="display:flex;align-items:center;justify-content:space-between;padding:9px 2px;font-size:8px;color:var(--t2);"></div>
+      <div class="card"><div class="tw" style="padding:0 14px 12px;"><table><thead><tr><th>Tanggal</th><th>Produk</th><th>Email</th><th>Key</th><th>Email</th><th>Nominal</th></tr></thead><tbody id="trx-body"></tbody></table></div></div>
+      <div id="trx-pg" style="display:flex;align-items:center;justify-content:space-between;padding:9px 2px;font-size:8px;color:var(--t2);flex-wrap:wrap;gap:6px;"></div>
     </div>
 
     <!-- LICENSES -->
     <div class="pg" id="pg-licenses">
       <div class="pg-hd"><div><div class="pg-title">License History</div><div class="pg-sub">Semua license yang kamu buat</div></div></div>
-      <div class="card">
-        <div class="tw" style="padding:0 14px 12px;">
-          <table><thead><tr><th>Tanggal</th><th>Produk</th><th>Key</th><th>Email Pembeli</th><th>Expires</th><th>Status</th></tr></thead>
-          <tbody id="lic-body"></tbody></table>
-        </div>
-      </div>
+      <div class="card"><div class="tw" style="padding:0 14px 12px;"><table><thead><tr><th>Tanggal</th><th>Produk</th><th>Key</th><th>Email</th><th>Expires</th><th>Status</th></tr></thead><tbody id="lic-body"></tbody></table></div></div>
     </div>
 
     <!-- ACCOUNT -->
     <div class="pg" id="pg-account">
-      <div class="pg-hd"><div><div class="pg-title">Akun Saya</div><div class="pg-sub">Informasi akun reseller</div></div></div>
+      <div class="pg-hd"><div><div class="pg-title">Akun Saya</div><div class="pg-sub">Informasi akun</div></div></div>
       <div class="card" style="max-width:400px;"><div class="cb2" id="acc-body"></div></div>
     </div>
 
+    <!-- OWNER PANEL -->
+    <div class="pg" id="pg-owner">
+      <div class="pg-hd">
+        <div><div class="pg-title">Owner Panel</div><div class="pg-sub">Manajemen reseller</div></div>
+        <button class="btn btn-g btn-sm" onclick="openCreateReseller()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Buat Reseller</button>
+      </div>
+      <!-- Owner stats -->
+      <div class="sg" style="grid-template-columns:repeat(3,1fr);">
+        <div class="sc cb"><div class="sc-top"><span class="sc-lbl">Total Reseller</span><div class="sc-ico ic-b"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div></div><div class="sc-val" id="ow-total">0</div><div class="sc-sub">Terdaftar</div></div>
+        <div class="sc cg"><div class="sc-top"><span class="sc-lbl">Aktif</span><div class="sc-ico ic-g"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div><div class="sc-val" id="ow-active">0</div><div class="sc-sub">Status aktif</div></div>
+        <div class="sc co"><div class="sc-top"><span class="sc-lbl">Suspended</span><div class="sc-ico ic-o"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div></div><div class="sc-val" id="ow-sus">0</div><div class="sc-sub">Disuspend</div></div>
+      </div>
+      <!-- Search -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="ch">
+          <div><div class="ct">DAFTAR RESELLER</div></div>
+          <div class="fb">
+            <input class="fi fi-sm" id="ow-q" placeholder="Cari username / email..." oninput="renderOwner()"/>
+            <button class="btn btn-s btn-sm" onclick="loadResellers()">↻</button>
+          </div>
+        </div>
+        <div id="ow-list" style="padding:14px 16px;"></div>
+      </div>
+    </div>
+
   </div><!-- /main -->
+
+  <!-- Mobile Bottom Nav -->
+  <div class="bot-nav">
+    <div class="bot-nav-inner">
+      <div class="bn on" onclick="goBn(this,'dashboard')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="bn-lbl">Home</span></div>
+      <div class="bn" onclick="goBn(this,'inventory')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><span class="bn-lbl">Slot</span></div>
+      <div class="bn" onclick="goBn(this,'generate')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span class="bn-lbl">Generate</span></div>
+      <div class="bn" onclick="goBn(this,'transactions')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="bn-lbl">Transaksi</span></div>
+      <div class="bn" onclick="goBn(this,'account')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bn-lbl">Akun</span></div>
+      <div class="bn owner-only" id="bn-owner" onclick="goBn(this,'owner')"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="bn-lbl">Owner</span></div>
+    </div>
+  </div>
+
 </div><!-- /pg-app -->
 
-<!-- Modal sukses generate -->
+<!-- Modal: Sukses generate -->
 <div class="mo" id="mo-ok">
   <div class="mo-box">
-    <div class="mo-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+    <div class="mo-close" onclick="closeModal('mo-ok')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
     <div class="mo-title">License Berhasil Dibuat</div>
     <div class="mo-sub">License telah digenerate dan produk dikirim ke pembeli.</div>
     <div class="mo-body" id="mo-body"></div>
-    <div class="mo-actions"><button class="btn btn-s" onclick="closeModal()">Tutup</button></div>
+    <div class="mo-actions"><button class="btn btn-s" onclick="closeModal('mo-ok')">Tutup</button></div>
+  </div>
+</div>
+
+<!-- Modal: Buat Reseller -->
+<div class="mo" id="mo-create">
+  <div class="mo-box">
+    <div class="mo-close" onclick="closeModal('mo-create')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+    <div class="mo-title">Buat Reseller Baru</div>
+    <div class="mo-sub">Buat profil reseller. Akun login dibuat manual via Supabase Auth, lalu isi user_id di bawah.</div>
+    <div class="fg"><label class="fl">Username</label><input class="fi" id="cr-username" placeholder="nama_reseller"/></div>
+    <div class="fg"><label class="fl">Email</label><input class="fi" id="cr-email" type="email" placeholder="reseller@email.com"/></div>
+    <div class="fg"><label class="fl">User ID (dari Supabase Auth)</label><input class="fi" id="cr-uid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"/><div style="font-size:7.5px;color:var(--t3);margin-top:4px;">Buat user di Supabase → Auth → Add User → copy user_id</div></div>
+    <div class="fg">
+      <label class="fl">Slot Awal per Produk</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><label class="fl">ZX CORE</label><input class="fi" id="cr-s-zx_core" type="number" value="2" min="0"/></div>
+        <div><label class="fl">ZX APEX</label><input class="fi" id="cr-s-zx_apex" type="number" value="2" min="0"/></div>
+        <div><label class="fl">ZX EXCLUSIVE</label><input class="fi" id="cr-s-zx_exclusive" type="number" value="4" min="0"/></div>
+        <div><label class="fl">CYBER PRO</label><input class="fi" id="cr-s-cyber_pro" type="number" value="2" min="0"/></div>
+        <div><label class="fl">INSANITY MAX</label><input class="fi" id="cr-s-insanity_max" type="number" value="2" min="0"/></div>
+      </div>
+    </div>
+    <div class="mo-err" id="cr-err"></div>
+    <div class="mo-actions">
+      <button class="btn btn-s" onclick="closeModal('mo-create')">Batal</button>
+      <button class="btn btn-p" id="cr-btn" onclick="submitCreateReseller()">Buat Reseller</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Kelola Slot -->
+<div class="mo" id="mo-slot">
+  <div class="mo-box">
+    <div class="mo-close" onclick="closeModal('mo-slot')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+    <div class="mo-title">Kelola Slot</div>
+    <div class="mo-sub" id="mo-slot-sub">Atur slot produk</div>
+    <div id="mo-slot-body" style="display:flex;flex-direction:column;gap:8px;"></div>
+    <div class="mo-actions"><button class="btn btn-s" onclick="closeModal('mo-slot')">Tutup</button></div>
+  </div>
+</div>
+
+<!-- Modal: Konfirmasi -->
+<div class="mo" id="mo-confirm">
+  <div class="mo-box" style="max-width:360px;">
+    <div class="mo-title" id="mc-title">Konfirmasi</div>
+    <div id="mc-msg" style="font-size:9px;color:var(--t2);margin:10px 0 18px;line-height:1.6;"></div>
+    <div class="mo-actions">
+      <button class="btn btn-s" onclick="closeModal('mo-confirm')">Batal</button>
+      <button class="btn btn-r" id="mc-ok">Ya, Lanjutkan</button>
+    </div>
   </div>
 </div>
 
@@ -409,15 +504,15 @@ tr:last-child td{border-bottom:none;}
 
 <script>
 'use strict';
-/* ═══════════════════════════════════════════════════════
-   CONFIG
-═══════════════════════════════════════════════════════ */
+/* ═══ CONFIG ═══ */
 var SUPA_URL    = 'https://miorkkrwldqkmgugppyk.supabase.co';
 var SUPA_KEY    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1pb3Jra3J3bGRxa21ndWdwcHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NDIwNjksImV4cCI6MjA5NTExODA2OX0.r_JeD_NdPpKZ7X_yAy8vx5Llrk6APV6AE7zQHTlxTD0';
 var RAILWAY_URL = 'https://mdzzxiters-backend-production.up.railway.app';
 var ADMIN_KEY   = 'mdzz_admin_2024';
 
-/* ═══ Supabase client ═══ */
+/* Owner credentials — ganti jika perlu */
+var OWNER_EMAILS = ['owner@mdzzxiters.com','agussuhana268@gmail.com'];
+
 var sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 /* ═══ PRODUCTS ═══ */
@@ -428,6 +523,10 @@ var PRODS = [
   {id:'cyber_pro',    name:'CYBER PRO',    price:150000, slot:2},
   {id:'insanity_max', name:'INSANITY MAX', price:350000, slot:2}
 ];
+var PRODUCT_FILES = {
+  'zx_core':'zx-core.zip','zx_apex':'zx-apex.zip',
+  'zx_exclusive':'zx-exclusive.zip','cyber_pro':'cyber-pro.zip','insanity_max':'insanity-max.zip'
+};
 
 /* ═══ UTILS ═══ */
 function gi(id){return document.getElementById(id);}
@@ -440,269 +539,145 @@ function toast(msg,t,dur){
   gi('toast').appendChild(el);
   setTimeout(function(){el.remove();},dur||2800);
 }
+function closeModal(id){gi(id).classList.remove('vis');}
+function confirm2(title,msg,cb){
+  gi('mc-title').textContent=title;
+  gi('mc-msg').textContent=msg;
+  gi('mo-confirm').classList.add('vis');
+  gi('mc-ok').onclick=function(){closeModal('mo-confirm');cb();};
+}
 
-/* ═══ KEY GENERATOR — identik admin (MDZZ-XXXX-XXXX-XXXX) ═══ */
+/* ═══ KEY GENERATOR ═══ */
 function genKey(){
   var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   var seg=function(n){var s='';for(var i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s;};
   return 'MDZZ-'+seg(4)+'-'+seg(4)+'-'+seg(4);
 }
 
-/* ═══ RAILWAY — send product ═══ */
-/* File nama mapping dari Supabase Storage bucket 'products' */
-var PRODUCT_FILES = {
-  'zx_core':      'zx-core.zip',
-  'zx_apex':      'zx-apex.zip',
-  'zx_exclusive': 'zx-exclusive.zip',
-  'cyber_pro':    'cyber-pro.zip',
-  'insanity_max': 'insanity-max.zip'
-};
-var productFiles = [];
-
-/* Load file list dari Supabase Storage langsung */
+/* ═══ PRODUCT FILES ═══ */
+var productFiles=[];
 function loadProductFiles(){
-  var sel = gi('gen-file');
-
-  /* Coba load dari Supabase Storage */
-  fetch(SUPA_URL+'/storage/v1/object/list/products', {
-    method: 'POST',
-    headers: {
-      'apikey':        SUPA_KEY,
-      'Authorization': 'Bearer '+SUPA_KEY,
-      'Content-Type':  'application/json'
-    },
-    body: JSON.stringify({prefix:'', limit:100, offset:0})
-  })
-  .then(function(r){ return r.json(); })
+  var sel=gi('gen-file');
+  fetch(SUPA_URL+'/storage/v1/object/list/products',{
+    method:'POST',
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({prefix:'',limit:100,offset:0})
+  }).then(function(r){return r.json();})
   .then(function(files){
-    /* Supabase returns array of {name, ...} objects */
-    productFiles = files.filter(function(f){return f&&f.name;}).map(function(f){return f.name;});
-    console.log('[RS] Supabase Storage files:', productFiles);
-    if(!productFiles.length){
-      /* Fallback ke hardcoded mapping */
-      productFiles = Object.values(PRODUCT_FILES);
-      console.log('[RS] Using hardcoded files:', productFiles);
-    }
-    populateFileSelect(sel);
-  })
-  .catch(function(e){
-    console.warn('[RS] Storage load error:', e.message);
-    /* Fallback ke hardcoded */
-    productFiles = Object.values(PRODUCT_FILES);
-    populateFileSelect(sel);
+    productFiles=(Array.isArray(files)?files:[]).filter(function(f){return f&&f.name;}).map(function(f){return f.name;});
+    if(!productFiles.length)productFiles=Object.values(PRODUCT_FILES);
+    if(sel)populateFileSelect(sel);
+  }).catch(function(){
+    productFiles=Object.values(PRODUCT_FILES);
+    if(sel)populateFileSelect(sel);
   });
 }
-
 function populateFileSelect(sel){
-  if(!sel) return;
-  sel.innerHTML = '<option value="">-- Pilih file --</option>' +
-    productFiles.map(function(f){
-      return '<option value="'+f+'">'+f+'</option>';
-    }).join('');
+  sel.innerHTML='<option value="">-- Pilih file --</option>'+
+    productFiles.map(function(f){return '<option value="'+f+'">'+f+'</option>';}).join('');
   autoSelectFile();
 }
-
 function autoSelectFile(){
-  if(!SEL) return;
-  var fileName = PRODUCT_FILES[SEL];
-  /* Cari di productFiles yang sudah loaded */
-  if(!fileName && productFiles.length){
-    var prod = PRODS.find(function(p){return p.id===SEL;});
-    if(prod){
-      var nd = prod.name.toLowerCase().replace(/\s+/g,'-');
-      fileName = productFiles.find(function(f){
-        return f.toLowerCase().includes(nd) || f.toLowerCase().replace(/[_\s]+/g,'-').includes(nd);
-      }) || productFiles[0];
-    }
+  if(!SEL)return;
+  var fn=PRODUCT_FILES[SEL];
+  if(!fn&&productFiles.length){
+    var p=PRODS.find(function(x){return x.id===SEL;});
+    if(p){var nd=p.name.toLowerCase().replace(/\s+/g,'-');fn=productFiles.find(function(f){return f.toLowerCase().includes(nd);});}
   }
-  var sel = gi('gen-file');
-  if(sel && fileName){
-    for(var i=0;i<sel.options.length;i++){
-      if(sel.options[i].value===fileName){sel.selectedIndex=i;break;}
-    }
-  }
+  var sel=gi('gen-file');
+  if(sel&&fn){for(var i=0;i<sel.options.length;i++){if(sel.options[i].value===fn){sel.selectedIndex=i;break;}}}
 }
-
-async function sendProductWithFile(buyerEmail,productName,licenseKey,senderName,fileName){
-  console.log('[RS] sendProduct payload:', {buyerEmail,productName,licenseKey,fileName,senderName});
-  var res=await fetch(RAILWAY_URL+'/api/send-product',{
+async function sendProduct(email,prodName,key,sender,fileName){
+  console.log('[RS] send-product:',{email,prodName,key,fileName,sender});
+  var r=await fetch(RAILWAY_URL+'/api/send-product',{
     method:'POST',
     headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
-    body:JSON.stringify({
-      buyerEmail:  buyerEmail,
-      productName: productName,
-      licenseKey:  licenseKey,
-      fileName:    fileName,
-      senderName:  senderName||'Reseller'
-    })
+    body:JSON.stringify({buyerEmail:email,productName:prodName,licenseKey:key,fileName:fileName,senderName:sender||'Reseller'})
   });
-  var body = await res.text();
-  console.log('[RS] send-product response:', res.status, body);
-  var d;
-  try{d=JSON.parse(body);}catch(e){throw new Error('Response tidak valid: '+body.slice(0,100));}
-  if(!res.ok||!d.success)throw new Error(d.message||'HTTP '+res.status);
+  var d=await r.json();
+  if(!r.ok||!d.success)throw new Error(d.message||'HTTP '+r.status);
   return d;
 }
 
-/* ═══════════════════════════════════════════════════════
-   STATE — satu sumber kebenaran, nama konsisten
-═══════════════════════════════════════════════════════ */
-var RS   = null;   // reseller row dari tabel resellers
-var INV  = {};     // product_id → {id, allocated, used}
-var TRX  = [];     // array transaksi
-var LICS = [];     // array license
-var SEL  = null;   // selected product id
-var TRX_PAGE = 1;
-var TRX_PER  = 20;
+/* ═══ STATE ═══ */
+var RS=null;var INV={};var TRX=[];var LICS=[];var SEL=null;
+var TRX_PAGE=1;var TRX_PER=20;
+var isOwner=false;var allResellers=[];
 
-/* ═══════════════════════════════════════════════════════
-   AUTH
-═══════════════════════════════════════════════════════ */
+/* ═══ AUTH ═══ */
 async function doLogin(){
-  var email = (gi('inp-email').value||'').trim();
-  var pass  = gi('inp-pass').value;
-  var errEl = gi('inp-err');
-  errEl.textContent = '';
-
+  var email=(gi('inp-email').value||'').trim();
+  var pass=gi('inp-pass').value;
+  var errEl=gi('inp-err');
+  errEl.textContent='';
   if(!email||!pass){errEl.textContent='Email dan password wajib diisi.';return;}
-
-  gi('inp-btn').disabled=true;
-  gi('inp-btn').textContent='Memuat...';
-
+  gi('inp-btn').disabled=true;gi('inp-btn').textContent='Memuat...';
   try{
-    /* 1. Supabase Auth login */
-    var authRes = await sb.auth.signInWithPassword({email:email,password:pass});
-    if(authRes.error){
-      errEl.textContent = authRes.error.message;
-      gi('inp-btn').disabled=false;gi('inp-btn').textContent='MASUK';
-      return;
-    }
-
-    var uid = authRes.data.user.id;
-
-    /* 2. Ambil profil reseller berdasarkan user_id */
-    var profRes = await sb.from('resellers').select('*').eq('user_id',uid).single();
-    if(profRes.error||!profRes.data){
-      errEl.textContent='Akun reseller tidak ditemukan. Pastikan akun sudah didaftarkan ke sistem.';
-      await sb.auth.signOut();
-      gi('inp-btn').disabled=false;gi('inp-btn').textContent='MASUK';
-      return;
-    }
-
-    if(profRes.data.status==='suspended'){
-      errEl.textContent='Akun kamu disuspend. Hubungi admin.';
-      await sb.auth.signOut();
-      gi('inp-btn').disabled=false;gi('inp-btn').textContent='MASUK';
-      return;
-    }
-
-    RS = profRes.data;
+    var ar=await sb.auth.signInWithPassword({email:email,password:pass});
+    if(ar.error){errEl.textContent=ar.error.message;gi('inp-btn').disabled=false;gi('inp-btn').textContent='MASUK';return;}
+    var uid=ar.data.user.id;
+    var pr=await sb.from('resellers').select('*').eq('user_id',uid).single();
+    if(pr.error||!pr.data){errEl.textContent='Akun reseller tidak ditemukan.';await sb.auth.signOut();gi('inp-btn').disabled=false;gi('inp-btn').textContent='MASUK';return;}
+    if(pr.data.status==='suspended'){errEl.textContent='Akun disuspend. Hubungi admin.';await sb.auth.signOut();gi('inp-btn').disabled=false;gi('inp-btn').textContent='MASUK';return;}
+    RS=pr.data;
+    isOwner=OWNER_EMAILS.indexOf(email)>=0||pr.data.role==='owner';
     gi('inp-btn').disabled=false;gi('inp-btn').textContent='MASUK';
     startApp();
-
-  }catch(e){
-    errEl.textContent='Error: '+e.message;
-    gi('inp-btn').disabled=false;gi('inp-btn').textContent='MASUK';
-  }
+  }catch(e){errEl.textContent='Error: '+e.message;gi('inp-btn').disabled=false;gi('inp-btn').textContent='MASUK';}
 }
 
 async function doLogout(){
   await sb.auth.signOut();
-  RS=null;INV={};TRX=[];LICS=[];SEL=null;
-  gi('pg-app').style.display='none';
-  gi('pg-login').style.display='flex';
+  RS=null;INV={};TRX=[];LICS=[];SEL=null;isOwner=false;allResellers=[];
+  gi('pg-app').style.display='none';gi('pg-login').style.display='flex';
 }
 
-/* Cek sesi tersimpan saat halaman dibuka */
 (async function checkSession(){
   try{
     var s=await sb.auth.getSession();
     if(!s.data||!s.data.session)return;
-
     var uid=s.data.session.user.id;
     var p=await sb.from('resellers').select('*').eq('user_id',uid).single();
-    if(p.error||!p.data||p.data.status==='suspended'){
-      await sb.auth.signOut();return;
-    }
+    if(p.error||!p.data||p.data.status==='suspended'){await sb.auth.signOut();return;}
     RS=p.data;
+    isOwner=OWNER_EMAILS.indexOf(s.data.session.user.email)>=0||p.data.role==='owner';
     startApp();
-  }catch(e){
-    console.warn('checkSession:',e.message);
-  }
+  }catch(e){console.warn('session:',e.message);}
 })();
 
-/* ═══════════════════════════════════════════════════════
-   APP INIT
-═══════════════════════════════════════════════════════ */
+/* ═══ START APP ═══ */
 function startApp(){
   gi('pg-login').style.display='none';
   gi('pg-app').style.display='block';
   gi('uname').textContent=RS.username||RS.email||'Reseller';
   gi('av').textContent=(RS.username||RS.email||'R')[0].toUpperCase();
+  if(isOwner){
+    gi('urole').textContent='Owner';
+    gi('owner-badge').style.display='inline-flex';
+    document.querySelectorAll('.owner-only').forEach(function(el){el.style.display='flex';});
+    gi('bn-owner').style.display='flex';
+  }
   loadProductFiles();
   loadAll();
 }
 
+/* ═══ DATA ═══ */
 async function loadAll(){
   await Promise.all([fetchInv(),fetchTrx(),fetchLics()]);
-  renderDash();
-  renderInv();
-  renderTrx();
-  renderLics();
-  renderAcc();
-  renderGenProds();
+  renderDash();renderInv();renderTrx();renderLics();renderAcc();renderGenProds();
 }
+async function fetchInv(){var r=await sb.from('reseller_inventory').select('*').eq('reseller_id',RS.id);INV={};if(r.data)r.data.forEach(function(row){INV[row.product_id]=row;});}
+async function fetchTrx(){var r=await sb.from('reseller_transactions').select('*').eq('reseller_id',RS.id).order('created_at',{ascending:false}).limit(200);TRX=r.data||[];}
+async function fetchLics(){var r=await sb.from('reseller_licenses').select('*').eq('reseller_id',RS.id).order('created_at',{ascending:false}).limit(200);LICS=r.data||[];}
 
-/* ═══════════════════════════════════════════════════════
-   DATA FETCHING
-═══════════════════════════════════════════════════════ */
-async function fetchInv(){
-  var r=await sb.from('reseller_inventory').select('*').eq('reseller_id',RS.id);
-  INV={};
-  if(r.data)r.data.forEach(function(row){INV[row.product_id]=row;});
-}
-async function fetchTrx(){
-  var r=await sb.from('reseller_transactions').select('*')
-    .eq('reseller_id',RS.id).order('created_at',{ascending:false}).limit(200);
-  TRX=r.data||[];
-}
-async function fetchLics(){
-  var r=await sb.from('reseller_licenses').select('*')
-    .eq('reseller_id',RS.id).order('created_at',{ascending:false}).limit(200);
-  LICS=r.data||[];
-}
-
-/* ═══════════════════════════════════════════════════════
-   RENDER — DASHBOARD
-═══════════════════════════════════════════════════════ */
-function renderDash(){
-  var tot=0,used=0;
-  PRODS.forEach(function(p){var v=INV[p.id]||{};tot+=(v.allocated||0);used+=(v.used||0);});
-  gi('st-total').textContent=tot;
-  gi('st-used').textContent=used;
-  gi('st-rem').textContent=tot-used;
-  gi('st-trx').textContent=TRX.length;
-
-  gi('d-inv').innerHTML=PRODS.map(function(p){return ivCard(p,false);}).join('');
-
-  var rows=TRX.slice(0,5);
-  gi('d-trx').innerHTML=rows.length
-    ?rows.map(function(t){return '<tr>'+
-        '<td>'+fd(t.created_at)+'</td>'+
-        '<td><span class="bge info">'+t.product_name+'</span></td>'+
-        '<td style="color:var(--t2);font-size:8px;">'+t.buyer_email+'</td>'+
-        '<td><span class="bge '+(t.email_sent?'ok':'wn')+'">'+(t.email_sent?'Terkirim':'Pending')+'</span></td>'+
-      '</tr>';}).join('')
-    :'<tr><td colspan="4" style="text-align:center;color:var(--t3);padding:16px;">Belum ada transaksi</td></tr>';
-}
-
+/* ═══ RENDER ═══ */
 function ivCard(p,big){
   var v=INV[p.id]||{allocated:0,used:0};
   var rem=(v.allocated||0)-(v.used||0);
   var pct=v.allocated?Math.round((v.used||0)/v.allocated*100):0;
   var cls=pct>80?'d':pct>50?'w':'';
   return '<div class="ivc"'+(big?' style="padding:18px;"':'')+'>' +
-    '<div class="ivn">'+p.name+'</div>' +
+    '<div class="ivn">'+p.name+'</div>'+
     (big?'<div class="ivr"><span class="ivl">Harga</span><span class="ivp" style="font-size:9px;">'+rp(p.price)+'</span></div><div style="height:1px;background:var(--bdr3);margin:8px 0;"></div>':'')+
     '<div class="ivr"><span class="ivl">Allocated</span><span class="ivv">'+(v.allocated||0)+'</span></div>'+
     '<div class="ivr"><span class="ivl">Used</span><span class="ivv">'+(v.used||0)+'</span></div>'+
@@ -712,230 +687,299 @@ function ivCard(p,big){
          '<div class="ivp">'+rp(p.price)+' / key</div>')+
   '</div>';
 }
-
-/* INVENTORY PAGE */
-function renderInv(){
-  gi('inv-full').innerHTML=PRODS.map(function(p){return ivCard(p,true);}).join('');
+function renderDash(){
+  var tot=0,used=0;
+  PRODS.forEach(function(p){var v=INV[p.id]||{};tot+=(v.allocated||0);used+=(v.used||0);});
+  gi('st-total').textContent=tot;gi('st-used').textContent=used;
+  gi('st-rem').textContent=tot-used;gi('st-trx').textContent=TRX.length;
+  gi('d-inv').innerHTML=PRODS.map(function(p){return ivCard(p,false);}).join('');
+  gi('d-trx').innerHTML=TRX.slice(0,5).map(function(t){
+    return '<tr><td>'+fd(t.created_at)+'</td><td><span class="bge info">'+t.product_name+'</span></td>'+
+      '<td style="color:var(--t2);font-size:8px;">'+t.buyer_email+'</td>'+
+      '<td><span class="bge '+(t.email_sent?'ok':'wn')+'">'+(t.email_sent?'Terkirim':'Pending')+'</span></td></tr>';
+  }).join('')||'<tr><td colspan="4" style="text-align:center;color:var(--t3);padding:16px;">Belum ada transaksi</td></tr>';
 }
-
-/* GENERATE — product selector */
+function renderInv(){gi('inv-full').innerHTML=PRODS.map(function(p){return ivCard(p,true);}).join('');}
 function renderGenProds(){
   gi('gen-prods').innerHTML=PRODS.map(function(p){
-    var v=INV[p.id]||{};
-    var rem=(v.allocated||0)-(v.used||0);
-    return '<div class="po'+(rem<=0?' dis':'')+(SEL===p.id?' sel':'')+'" id="po-'+p.id+'" onclick="selProd(\''+p.id+'\')">' +
-      '<div class="po-n">'+p.name+'</div>'+
-      '<div class="po-p">'+rp(p.price)+'</div>'+
-      '<div class="po-s">'+rem+' slot tersisa</div>'+
-    '</div>';
+    var v=INV[p.id]||{};var rem=(v.allocated||0)-(v.used||0);
+    return '<div class="po'+(rem<=0?' dis':'')+(SEL===p.id?' sel':'')+'" id="po-'+p.id+'" onclick="selProd(\''+p.id+'\')">'+
+      '<div class="po-n">'+p.name+'</div><div class="po-p">'+rp(p.price)+'</div><div class="po-s">'+rem+' slot tersisa</div></div>';
   }).join('');
 }
 function selProd(id){
   var v=INV[id]||{};
-  if((v.allocated||0)-(v.used||0)<=0){toast('Slot habis untuk produk ini','tw2');return;}
-  SEL=id;
-  document.querySelectorAll('.po').forEach(function(el){el.classList.remove('sel');});
+  if((v.allocated||0)-(v.used||0)<=0){toast('Slot habis','tw2');return;}
+  SEL=id;document.querySelectorAll('.po').forEach(function(el){el.classList.remove('sel');});
   var el=gi('po-'+id);if(el)el.classList.add('sel');
   autoSelectFile();
 }
-
-/* TRANSACTIONS */
 function renderTrx(){
   var q=((gi('trx-q')||{}).value||'').toLowerCase();
   var pf=((gi('trx-prod')||{}).value||'');
   var filtered=TRX.filter(function(t){
-    var ms=!q||(t.buyer_email||'').toLowerCase().includes(q)||
-              (t.license_key||'').toLowerCase().includes(q)||
-              (t.product_name||'').toLowerCase().includes(q);
-    var mp=!pf||t.product_name===pf;
-    return ms&&mp;
+    return (!q||(t.buyer_email||'').toLowerCase().includes(q)||(t.license_key||'').toLowerCase().includes(q)||(t.product_name||'').toLowerCase().includes(q))&&(!pf||t.product_name===pf);
   });
-  var tot=filtered.length;
-  var start=(TRX_PAGE-1)*TRX_PER;
-  var paged=filtered.slice(start,start+TRX_PER);
-  gi('trx-body').innerHTML=paged.length
-    ?paged.map(function(t){return '<tr>'+
-        '<td>'+fd(t.created_at)+'</td>'+
-        '<td><span class="bge info">'+t.product_name+'</span></td>'+
-        '<td style="color:var(--t2);font-size:8px;">'+t.buyer_email+'</td>'+
-        '<td style="font-size:7.5px;color:var(--sky2);user-select:all;">'+t.license_key+'</td>'+
-        '<td><span class="bge '+(t.email_sent?'ok':'wn')+'">'+(t.email_sent?'Terkirim':'Pending')+'</span></td>'+
-        '<td style="color:var(--grn);">'+rp(t.amount)+'</td>'+
-      '</tr>';}).join('')
-    :'<tr><td colspan="6" style="text-align:center;color:var(--t3);padding:18px;">Tidak ada data</td></tr>';
+  var tot=filtered.length;var start=(TRX_PAGE-1)*TRX_PER;var paged=filtered.slice(start,start+TRX_PER);
+  gi('trx-body').innerHTML=paged.length?paged.map(function(t){
+    return '<tr><td>'+fd(t.created_at)+'</td><td><span class="bge info">'+t.product_name+'</span></td>'+
+      '<td style="color:var(--t2);font-size:8px;">'+t.buyer_email+'</td>'+
+      '<td style="font-size:7.5px;color:var(--sky2);user-select:all;">'+t.license_key+'</td>'+
+      '<td><span class="bge '+(t.email_sent?'ok':'wn')+'">'+(t.email_sent?'Terkirim':'Pending')+'</span></td>'+
+      '<td style="color:var(--grn);">'+rp(t.amount)+'</td></tr>';
+  }).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--t3);padding:18px;">Tidak ada data</td></tr>';
   var pages=Math.ceil(tot/TRX_PER)||1;
   gi('trx-pg').innerHTML='<span>'+tot+' transaksi | Hal '+TRX_PAGE+'/'+pages+'</span>'+
-    '<div style="display:flex;gap:5px;">'+
-    (TRX_PAGE>1?'<button class="btn btn-s btn-sm" onclick="TRX_PAGE--;renderTrx()">← Prev</button>':'')+
-    (TRX_PAGE<pages?'<button class="btn btn-s btn-sm" onclick="TRX_PAGE++;renderTrx()">Next →</button>':'')+
-    '</div>';
+    '<div style="display:flex;gap:5px;">'+(TRX_PAGE>1?'<button class="btn btn-s btn-sm" onclick="TRX_PAGE--;renderTrx()">← Prev</button>':'')+
+    (TRX_PAGE<pages?'<button class="btn btn-s btn-sm" onclick="TRX_PAGE++;renderTrx()">Next →</button>':'')+'</div>';
 }
-
-/* LICENSES */
 function renderLics(){
-  gi('lic-body').innerHTML=LICS.length
-    ?LICS.map(function(l){
-        var exp=l.expires_at;
-        var expired=exp&&new Date(exp)<new Date();
-        return '<tr>'+
-          '<td>'+fd(l.created_at)+'</td>'+
-          '<td><span class="bge info">'+l.product_name+'</span></td>'+
-          '<td style="font-size:7.5px;color:var(--sky2);user-select:all;">'+l.license_key+'</td>'+
-          '<td style="color:var(--t2);font-size:8px;">'+l.buyer_email+'</td>'+
-          '<td style="font-size:8px;color:var(--t2);">'+(exp?exp.slice(0,10):'Permanent')+'</td>'+
-          '<td><span class="bge '+(expired?'er':'ok')+'">'+(expired?'Expired':'Aktif')+'</span></td>'+
-        '</tr>';}).join('')
-    :'<tr><td colspan="6" style="text-align:center;color:var(--t3);padding:18px;">Belum ada license</td></tr>';
+  gi('lic-body').innerHTML=LICS.length?LICS.map(function(l){
+    var exp=l.expires_at;var expired=exp&&new Date(exp)<new Date();
+    return '<tr><td>'+fd(l.created_at)+'</td><td><span class="bge info">'+l.product_name+'</span></td>'+
+      '<td style="font-size:7.5px;color:var(--sky2);user-select:all;">'+l.license_key+'</td>'+
+      '<td style="color:var(--t2);font-size:8px;">'+l.buyer_email+'</td>'+
+      '<td style="font-size:8px;color:var(--t2);">'+(exp?exp.slice(0,10):'Permanent')+'</td>'+
+      '<td><span class="bge '+(expired?'er':'ok')+'">'+(expired?'Expired':'Aktif')+'</span></td></tr>';
+  }).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--t3);padding:18px;">Belum ada license</td></tr>';
 }
-
-/* ACCOUNT */
 function renderAcc(){
   if(!RS)return;
-  var rows=[
-    ['Username',RS.username||'-'],
-    ['Email',RS.email||'-'],
+  gi('acc-body').innerHTML=[
+    ['Username',RS.username||'-'],['Email',RS.email||'-'],
+    ['Role',isOwner?'<span class="bge pur">Owner</span>':'<span class="bge info">Reseller</span>'],
     ['Status','<span class="bge '+(RS.status==='active'?'ok':'er')+'">'+(RS.status||'active')+'</span>'],
     ['Member Sejak',fd(RS.created_at)]
-  ];
-  gi('acc-body').innerHTML=rows.map(function(r){
-    return '<div class="ar"><span class="al">'+r[0]+'</span><span class="av">'+r[1]+'</span></div>';
-  }).join('');
+  ].map(function(r){return '<div class="ar"><span class="al">'+r[0]+'</span><span class="av2">'+r[1]+'</span></div>';}).join('');
 }
 
-/* Build modal HTML — separated to avoid string concat syntax issues */
-function buildModal(prodName,key,email,expires,fileName,sent){
-  var rows = [
-    ['Produk',       prodName],
-    ['License Key',  '<span style="color:var(--sky2);user-select:all;font-size:11px;font-weight:700;">'+key+'</span>'],
-    ['Email Pembeli',email],
-    ['Expires',      expires||'Permanent'],
-    ['File Dikirim', '<span style="color:var(--sky2);font-size:8px;">'+fileName+'</span>'],
-    ['Email Produk', sent
-      ? '<span style="color:var(--grn);">✓ Terkirim ke pembeli</span>'
-      : '<span style="color:var(--gold);">⚠ Gagal — kirim manual</span>']
-  ];
-  return rows.map(function(r){
-    return '<div style="margin-bottom:8px;"><span style="color:var(--t2);font-size:8px;">'+r[0]+'</span><br>'+r[1]+'</div>';
-  }).join('');
-}
-
-/* ═══════════════════════════════════════════════════════
-   GENERATE LICENSE
-═══════════════════════════════════════════════════════ */
+/* ═══ GENERATE ═══ */
 async function doGenerate(){
-  if(!SEL){toast('Pilih produk terlebih dahulu','tw2');return;}
+  if(!SEL){toast('Pilih produk dulu','tw2');return;}
   var email=(gi('gen-email').value||'').trim();
   if(!email||!email.includes('@')){toast('Email tidak valid','te');return;}
-
+  var fileName=(gi('gen-file')||{}).value||'';
+  if(!fileName){toast('Pilih file produk','tw2');return;}
   var inv=INV[SEL]||{};
   if((inv.allocated||0)-(inv.used||0)<=0){toast('Slot habis!','te');return;}
-
-  var btn=gi('gen-btn');
-  btn.disabled=true;btn.textContent='Memproses...';
+  var btn=gi('gen-btn');btn.disabled=true;btn.textContent='Memproses...';
   gi('gen-msg').textContent='';
-
   var prod=PRODS.find(function(p){return p.id===SEL;});
   var key=genKey();
-
-  /* Hitung expires_at */
-  var durVal=parseInt(gi('gen-dur').value)||null;
-  var durUnit=gi('gen-unit').value;
-  var expiresAt=null;
+  var durVal=parseInt(gi('gen-dur').value)||null;var durUnit=gi('gen-unit').value;var expiresAt=null;
   if(durVal){
     var d=new Date();
     if(durUnit==='days')d.setDate(d.getDate()+durVal);
     else if(durUnit==='months')d.setMonth(d.getMonth()+durVal);
     else d.setFullYear(d.getFullYear()+durVal);
-    /* Format APK-compatible: yyyy-MM-ddTHH:mm:ss */
-    expiresAt=d.getFullYear()+'-'+
-      String(d.getMonth()+1).padStart(2,'0')+'-'+
-      String(d.getDate()).padStart(2,'0')+'T'+
-      String(d.getHours()).padStart(2,'0')+':'+
-      String(d.getMinutes()).padStart(2,'0')+':00';
+    expiresAt=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'T'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':00';
   }
-
   try{
-    /* 1. Simpan ke tabel licenses (kompatibel APK) */
-    var r1=await sb.from('licenses').insert({
-      key:          key,
-      project:      prod.name,
-      active:       true,
-      used:         false,
-      status:       'available',
-      expires_at:   expiresAt,
-      generated_by: RS.username||RS.email
-    });
+    var r1=await sb.from('licenses').insert({key:key,project:prod.name,active:true,used:false,status:'available',expires_at:expiresAt,generated_by:RS.username||RS.email});
     if(r1.error)throw new Error('Gagal simpan license: '+r1.error.message);
-
-    /* 2. Catat transaksi reseller */
-    await sb.from('reseller_transactions').insert({
-      reseller_id:  RS.id,
-      product_id:   SEL,
-      product_name: prod.name,
-      buyer_email:  email,
-      license_key:  key,
-      amount:       prod.price,
-      email_sent:   false,
-      created_at:   new Date().toISOString()
-    });
-
-    /* 3. Catat di reseller_licenses */
-    await sb.from('reseller_licenses').insert({
-      reseller_id:  RS.id,
-      license_key:  key,
-      product_id:   SEL,
-      product_name: prod.name,
-      buyer_email:  email,
-      expires_at:   expiresAt,
-      created_at:   new Date().toISOString()
-    });
-
-    /* 4. Kurangi slot */
-    await sb.from('reseller_inventory')
-      .update({used:(inv.used||0)+1})
-      .eq('reseller_id',RS.id)
-      .eq('product_id',SEL);
-
-    /* 5. Kirim produk + license via Railway */
-    var selFile  = gi('gen-file');
-    var fileName = selFile ? selFile.value : null;
-    console.log('[RS] Sending with fileName:', fileName);
+    await sb.from('reseller_transactions').insert({reseller_id:RS.id,product_id:SEL,product_name:prod.name,buyer_email:email,license_key:key,amount:prod.price,email_sent:false,created_at:new Date().toISOString()});
+    await sb.from('reseller_licenses').insert({reseller_id:RS.id,license_key:key,product_id:SEL,product_name:prod.name,buyer_email:email,expires_at:expiresAt,created_at:new Date().toISOString()});
+    await sb.from('reseller_inventory').update({used:(inv.used||0)+1}).eq('reseller_id',RS.id).eq('product_id',SEL);
     var emailSent=false;
     try{
-      if(!fileName){throw new Error('Pilih file produk terlebih dahulu');}
-      await sendProductWithFile(email,prod.name,key,RS.username||RS.email,fileName);
+      await sendProduct(email,prod.name,key,RS.username||RS.email,fileName);
       emailSent=true;
-      await sb.from('reseller_transactions')
-        .update({email_sent:true})
-        .eq('reseller_id',RS.id)
-        .eq('license_key',key);
-    }catch(emailErr){
-      console.warn('Email error:',emailErr.message);
-    }
-
-    /* 6. Tampilkan hasil */
-    gi('mo-body').innerHTML = buildModal(prod.name,key,email,expiresAt,fileName,emailSent);
+      await sb.from('reseller_transactions').update({email_sent:true}).eq('reseller_id',RS.id).eq('license_key',key);
+    }catch(emailErr){console.warn('Email error:',emailErr.message);}
+    gi('mo-body').innerHTML=buildModal(prod.name,key,email,expiresAt,fileName,emailSent);
     gi('mo-ok').classList.add('vis');
     toast('License berhasil dibuat!','ts');
-
-    /* Reset form */
-    gi('gen-email').value='';gi('gen-dur').value='';
-    SEL=null;document.querySelectorAll('.po').forEach(function(el){el.classList.remove('sel');});
+    gi('gen-email').value='';gi('gen-dur').value='';SEL=null;
+    document.querySelectorAll('.po').forEach(function(el){el.classList.remove('sel');});
     var gf=gi('gen-file');if(gf)gf.selectedIndex=0;
     btn.disabled=false;btn.textContent='Generate & Kirim';
     await fetchInv();renderDash();renderInv();renderGenProds();
-    await fetchTrx();renderTrx();
-    await fetchLics();renderLics();
-
+    await fetchTrx();renderTrx();await fetchLics();renderLics();
   }catch(e){
-    gi('gen-msg').style.color='var(--rose)';
-    gi('gen-msg').textContent='Error: '+e.message;
+    gi('gen-msg').style.color='var(--rose)';gi('gen-msg').textContent='Error: '+e.message;
     btn.disabled=false;btn.textContent='Generate & Kirim';
-    toast('Generate gagal: '+e.message,'te',4000);
+    toast('Gagal: '+e.message,'te',4000);
+  }
+}
+function buildModal(pn,key,email,exp,fn,sent){
+  return [
+    ['Produk',pn],
+    ['License Key','<span style="color:var(--sky2);user-select:all;font-size:11px;font-weight:700;">'+key+'</span>'],
+    ['Email Pembeli',email],['Expires',exp||'Permanent'],
+    ['File Dikirim','<span style="color:var(--sky2);font-size:8px;">'+fn+'</span>'],
+    ['Email',sent?'<span style="color:var(--grn);">✓ Terkirim</span>':'<span style="color:var(--gold);">⚠ Gagal — kirim manual</span>']
+  ].map(function(r){return '<div style="margin-bottom:8px;"><span style="color:var(--t2);font-size:8px;">'+r[0]+'</span><br>'+r[1]+'</div>';}).join('');
+}
+
+/* ═══════════════════════════════════════
+   OWNER PANEL
+═══════════════════════════════════════ */
+async function loadResellers(){
+  if(!isOwner)return;
+  var r=await sb.from('resellers').select('*').order('created_at',{ascending:false});
+  allResellers=r.data||[];
+  var invR=await sb.from('reseller_inventory').select('*');
+  var invData=invR.data||[];
+  /* attach inventory to each reseller */
+  allResellers.forEach(function(rs){
+    rs._inv=invData.filter(function(i){return i.reseller_id===rs.id;});
+  });
+  renderOwnerStats();renderOwner();
+}
+
+function renderOwnerStats(){
+  gi('ow-total').textContent=allResellers.length;
+  gi('ow-active').textContent=allResellers.filter(function(r){return r.status!=='suspended';}).length;
+  gi('ow-sus').textContent=allResellers.filter(function(r){return r.status==='suspended';}).length;
+}
+
+function renderOwner(){
+  var q=((gi('ow-q')||{}).value||'').toLowerCase();
+  var filtered=allResellers.filter(function(r){
+    return !q||(r.username||'').toLowerCase().includes(q)||(r.email||'').toLowerCase().includes(q);
+  });
+  if(!filtered.length){
+    gi('ow-list').innerHTML='<div style="text-align:center;color:var(--t3);padding:20px;font-size:9px;">Belum ada reseller</div>';
+    return;
+  }
+  gi('ow-list').innerHTML=filtered.map(function(rs){
+    var totalSlot=0,usedSlot=0;
+    (rs._inv||[]).forEach(function(i){totalSlot+=(i.allocated||0);usedSlot+=(i.used||0);});
+    var isSus=rs.status==='suspended';
+    return '<div class="rs-card">'+
+      '<div class="rs-hd">'+
+        '<div>'+
+          '<div class="rs-name">'+rs.username+'</div>'+
+          '<div class="rs-email">'+rs.email+'</div>'+
+          '<div style="margin-top:4px;display:flex;gap:5px;align-items:center;">'+
+            '<span class="bge '+(isSus?'er':'ok')+'">'+(isSus?'Suspended':'Aktif')+'</span>'+
+            '<span style="font-size:7.5px;color:var(--t3);">Slot '+usedSlot+'/'+totalSlot+'</span>'+
+          '</div>'+
+        '</div>'+
+        '<div class="rs-actions">'+
+          '<button class="btn btn-s btn-sm" onclick="openSlotModal(\''+rs.id+'\',\''+rs.username+'\')">Slot</button>'+
+          (isSus
+            ?'<button class="btn btn-g btn-sm" onclick="ownerAction(\'activate\',\''+rs.id+'\',\''+rs.username+'\')">Aktifkan</button>'
+            :'<button class="btn btn-o btn-sm" onclick="ownerAction(\'suspend\',\''+rs.id+'\',\''+rs.username+'\')">Suspend</button>')+
+          '<button class="btn btn-r btn-sm" onclick="ownerAction(\'delete\',\''+rs.id+'\',\''+rs.username+'\')">Hapus</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="rs-slots">'+
+        PRODS.map(function(p){
+          var inv=(rs._inv||[]).find(function(i){return i.product_id===p.id;})||{allocated:0,used:0};
+          var rem=(inv.allocated||0)-(inv.used||0);
+          return '<div class="rs-slot-item">'+
+            '<div class="rs-slot-name">'+p.name+'</div>'+
+            '<div class="rs-slot-val">'+rem+'<span style="font-size:9px;color:var(--t3);font-family:var(--mono);">/'+inv.allocated+'</span></div>'+
+            '<div class="rs-slot-rem">tersisa</div>'+
+          '</div>';
+        }).join('')+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+async function ownerAction(action,rsId,rsName){
+  if(action==='suspend'){
+    confirm2('Suspend Reseller','Reseller "'+rsName+'" tidak bisa login setelah disuspend.',async function(){
+      await sb.from('resellers').update({status:'suspended'}).eq('id',rsId);
+      toast(rsName+' disuspend','tw2');loadResellers();
+    });
+  } else if(action==='activate'){
+    await sb.from('resellers').update({status:'active'}).eq('id',rsId);
+    toast(rsName+' diaktifkan','ts');loadResellers();
+  } else if(action==='delete'){
+    confirm2('Hapus Reseller','Hapus "'+rsName+"\"? Data inventory dan transaksi juga akan dihapus. Tidak bisa diurungkan.",async function(){
+      await sb.from('reseller_inventory').delete().eq('reseller_id',rsId);
+      await sb.from('reseller_transactions').delete().eq('reseller_id',rsId);
+      await sb.from('reseller_licenses').delete().eq('reseller_id',rsId);
+      await sb.from('resellers').delete().eq('id',rsId);
+      toast(rsName+' dihapus','ts');loadResellers();
+    });
   }
 }
 
-function closeModal(){gi('mo-ok').classList.remove('vis');}
+/* Slot modal */
+var slotRsId=null;
+async function openSlotModal(rsId,rsName){
+  slotRsId=rsId;
+  gi('mo-slot-sub').textContent='Kelola slot untuk: '+rsName;
+  var r=await sb.from('reseller_inventory').select('*').eq('reseller_id',rsId);
+  var invMap={};(r.data||[]).forEach(function(i){invMap[i.product_id]=i;});
+  gi('mo-slot-body').innerHTML=PRODS.map(function(p){
+    var inv=invMap[p.id]||{allocated:0,used:0};
+    return '<div style="background:rgba(56,189,248,.04);border:1px solid var(--bdr);border-radius:9px;padding:12px;">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'+
+        '<div><div style="font-family:var(--hud);font-size:8.5px;font-weight:700;color:var(--t1);">'+p.name+'</div>'+
+        '<div style="font-size:7.5px;color:var(--t3);margin-top:2px;">Used: '+(inv.used||0)+'</div></div>'+
+        '<div style="display:flex;align-items:center;gap:6px;">'+
+          '<button onclick="adjSlot(\''+rsId+'\',\''+p.id+'\',-1)" style="width:28px;height:28px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.2);border-radius:6px;color:var(--rose);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>'+
+          '<input id="sl-'+p.id+'" type="number" value="'+(inv.allocated||0)+'" min="'+(inv.used||0)+'" style="width:56px;text-align:center;background:rgba(14,165,233,.04);border:1px solid var(--bdr);border-radius:6px;padding:5px;font-family:var(--mono);font-size:11px;color:var(--t1);"/>'+
+          '<button onclick="adjSlot(\''+rsId+'\',\''+p.id+'\',1)" style="width:28px;height:28px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:6px;color:var(--grn);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>'+
+          '<button onclick="setSlot(\''+rsId+'\',\''+p.id+'\')" style="padding:5px 9px;background:rgba(14,165,233,.1);border:1px solid var(--bdr);border-radius:6px;font-size:7.5px;color:var(--sky);cursor:pointer;font-family:var(--mono);">SET</button>'+
+        '</div>'+
+      '</div>'+
+      '<div style="display:flex;gap:5px;">'+
+        '<button onclick="refillSlot(\''+rsId+'\',\''+p.id+'\','+(inv.used||0)+')" style="padding:4px 8px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:5px;font-size:7px;color:var(--gold);cursor:pointer;font-family:var(--mono);">RESET USED→0</button>'+
+        '<button onclick="addSlots(\''+rsId+'\',\''+p.id+'\','+(inv.allocated||0)+','+(inv.used||0)+')" style="padding:4px 8px;background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.2);border-radius:5px;font-size:7px;color:var(--purple);cursor:pointer;font-family:var(--mono);">+10 SLOT</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  gi('mo-slot').classList.add('vis');
+}
+function adjSlot(rsId,prodId,delta){
+  var inp=gi('sl-'+prodId);if(!inp)return;
+  inp.value=Math.max(parseInt(inp.value||0)+delta,0);
+}
+async function setSlot(rsId,prodId){
+  var inp=gi('sl-'+prodId);if(!inp)return;
+  var newVal=parseInt(inp.value||0);
+  await sb.from('reseller_inventory').update({allocated:newVal}).eq('reseller_id',rsId).eq('product_id',prodId);
+  toast('Slot diupdate','ts');loadResellers();
+}
+async function refillSlot(rsId,prodId,usedNow){
+  confirm2('Reset Used','Reset slot used ke 0 untuk produk ini? Ini tidak mempengaruhi license yang sudah dibuat.',async function(){
+    await sb.from('reseller_inventory').update({used:0}).eq('reseller_id',rsId).eq('product_id',prodId);
+    /* Update input */
+    var inp=gi('sl-'+prodId);if(inp)inp.min=0;
+    toast('Slot direset','ts');loadResellers();
+  });
+}
+async function addSlots(rsId,prodId,currentAlloc,currentUsed){
+  var newAlloc=currentAlloc+10;
+  await sb.from('reseller_inventory').update({allocated:newAlloc}).eq('reseller_id',rsId).eq('product_id',prodId);
+  var inp=gi('sl-'+prodId);if(inp)inp.value=newAlloc;
+  toast('+10 slot ditambahkan','ts');loadResellers();
+}
+
+/* Buat reseller */
+function openCreateReseller(){gi('cr-err').textContent='';gi('mo-create').classList.add('vis');}
+async function submitCreateReseller(){
+  var username=(gi('cr-username').value||'').trim();
+  var email=(gi('cr-email').value||'').trim();
+  var uid=(gi('cr-uid').value||'').trim();
+  var errEl=gi('cr-err');errEl.textContent='';
+  if(!username||!email||!uid){errEl.textContent='Semua field wajib diisi.';return;}
+  gi('cr-btn').disabled=true;gi('cr-btn').textContent='Memproses...';
+  try{
+    var r=await sb.from('resellers').insert({user_id:uid,username:username,email:email,status:'active',created_at:new Date().toISOString()});
+    if(r.error)throw new Error(r.error.message);
+    var newRs=await sb.from('resellers').select('id').eq('user_id',uid).single();
+    if(!newRs.data)throw new Error('Gagal ambil ID reseller baru');
+    var rsId=newRs.data.id;
+    var slots=PRODS.map(function(p){
+      var val=parseInt((gi('cr-s-'+p.id)||{}).value||p.slot)||p.slot;
+      return {reseller_id:rsId,product_id:p.id,allocated:val,used:0};
+    });
+    await sb.from('reseller_inventory').insert(slots);
+    toast('Reseller "'+username+'" berhasil dibuat!','ts');
+    closeModal('mo-create');
+    gi('cr-username').value='';gi('cr-email').value='';gi('cr-uid').value='';
+    PRODS.forEach(function(p){var el=gi('cr-s-'+p.id);if(el)el.value=p.slot;});
+    loadResellers();
+  }catch(e){errEl.textContent='Error: '+e.message;}
+  gi('cr-btn').disabled=false;gi('cr-btn').textContent='Buat Reseller';
+}
 
 /* ═══ NAVIGATION ═══ */
 function go(el,page){
@@ -943,12 +987,18 @@ function go(el,page){
   el.classList.add('on');
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
   var pg=gi('pg-'+page);if(pg)pg.classList.add('on');
+  if(page==='owner'&&isOwner&&!allResellers.length)loadResellers();
 }
-
-/* ═══ KEYBOARD ═══ */
-document.addEventListener('keydown',function(e){
-  if(e.key==='Enter'&&gi('pg-login').style.display!=='none')doLogin();
-});
+function goBn(el,page){
+  document.querySelectorAll('.bn').forEach(function(n){n.classList.remove('on');});
+  el.classList.add('on');
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  var pg=gi('pg-'+page);if(pg)pg.classList.add('on');
+  /* Sync sidebar */
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
+  if(page==='owner'&&isOwner&&!allResellers.length)loadResellers();
+}
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&gi('pg-login').style.display!=='none')doLogin();});
 </script>
 </body>
 </html>
