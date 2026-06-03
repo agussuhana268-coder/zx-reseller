@@ -774,6 +774,23 @@ function renderAcc(){
   }).join('');
 }
 
+/* Build modal HTML — separated to avoid string concat syntax issues */
+function buildModal(prodName,key,email,expires,fileName,sent){
+  var rows = [
+    ['Produk',       prodName],
+    ['License Key',  '<span style="color:var(--sky2);user-select:all;font-size:11px;font-weight:700;">'+key+'</span>'],
+    ['Email Pembeli',email],
+    ['Expires',      expires||'Permanent'],
+    ['File Dikirim', '<span style="color:var(--sky2);font-size:8px;">'+fileName+'</span>'],
+    ['Email Produk', sent
+      ? '<span style="color:var(--grn);">✓ Terkirim ke pembeli</span>'
+      : '<span style="color:var(--gold);">⚠ Gagal — kirim manual</span>']
+  ];
+  return rows.map(function(r){
+    return '<div style="margin-bottom:8px;"><span style="color:var(--t2);font-size:8px;">'+r[0]+'</span><br>'+r[1]+'</div>';
+  }).join('');
+}
+
 /* ═══════════════════════════════════════════════════════
    GENERATE LICENSE
 ═══════════════════════════════════════════════════════ */
@@ -869,17 +886,7 @@ async function doGenerate(){
     }
 
     /* 6. Tampilkan hasil */
-    gi('mo-body').innerHTML=
-      '<div><span style="color:var(--t2);">Produk</span><br><b>'+prod.name+'</b></div>'+
-      '<div style="margin-top:8px;"><span style="color:var(--t2);">License Key</span><br>'+
-        '<b style="color:var(--sky2);user-select:all;font-size:11px;">'+key+'</b></div>'+
-      '<div style="margin-top:8px;"><span style="color:var(--t2);">Email Pembeli</span><br>'+email+'</div>'+
-      '<div style="margin-top:8px;"><span style="color:var(--t2);">Expires</span><br>'+(expiresAt||'Permanent')+'</div>'+
-      '<div style="margin-top:8px;"><span style="color:var(--t2);">File Dikirim</span><br>'+
-        '<span style="color:var(--sky2);font-size:8px;">'+fileName+'</span></div>'+
-      '<div style="margin-top:8px;"><span style="color:var(--t2);">Email Produk</span><br>'+'
-        '<span style="color:'+(emailSent?'var(--grn)':'var(--gold)');+'">'+
-        (emailSent?'✓ Terkirim':'⚠ Gagal — kirim manual')+'</span></div>';
+    gi('mo-body').innerHTML = buildModal(prod.name,key,email,expiresAt,fileName,emailSent);
     gi('mo-ok').classList.add('vis');
     toast('License berhasil dibuat!','ts');
 
