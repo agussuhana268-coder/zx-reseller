@@ -567,9 +567,63 @@ tbody tr:last-child td{border-bottom:none;}
 const SUPA_URL = 'https://miorkkrwldqkmgugppyk.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1pb3Jra3J3bGRxa21ndWdwcHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NDIwNjksImV4cCI6MjA5NTExODA2OX0.r_JeD_NdPpKZ7X_yAy8vx5Llrk6APV6AE7zQHTlxTD0';
 
+/* ═══════════════════════════════════════════════════════
+   RAILWAY BACKEND — identik dengan admin panel
+   URL  : https://mdzzxiters-backend-production.up.railway.app
+   Endpoint kirim produk  : POST /api/send-product
+   Endpoint list produk   : GET  /api/products
+   Auth header            : X-Admin-Key: mdzz_admin_2024
+════════════════════════════════════════════════════════ */
+const RAILWAY_URL = 'https://mdzzxiters-backend-production.up.railway.app';
+const ADMIN_KEY   = 'mdzz_admin_2024';
+let   productFiles = [];
+
+/* Preload daftar file produk dari Railway storage */
+async function loadProductFiles(){
+  try{
+    const res  = await fetch(RAILWAY_URL+'/api/products',{
+      headers:{'X-Admin-Key':ADMIN_KEY}
+    });
+    const data = await res.json();
+    productFiles = data.files || [];
+    console.log('[RS] Product files:', productFiles);
+  }catch(e){
+    console.warn('[RS] loadProductFiles error:', e.message);
+  }
+}
+
+/* Cari fileName yang cocok untuk produk (misal "ZX EXCLUSIVE" → zx-exclusive.zip) */
+function findProductFile(productName){
+  const norm     = productName.toLowerCase().replace(/\s+/g,'');
+  const normDash = productName.toLowerCase().replace(/\s+/g,'-');
+  return productFiles.find(f=>{
+    const fl = f.toLowerCase();
+    return fl.includes(norm)||fl.includes(normDash)||fl.includes(norm.slice(0,5));
+  }) || productFiles[0] || null;
+}
+
+/* Kirim produk + license via Railway — alur identik admin panel */
+async function sendProductViaRailway(buyerEmail, productName, licenseKey, senderName){
+  const fileName = findProductFile(productName);
+  const res = await fetch(RAILWAY_URL+'/api/send-product',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
+    body: JSON.stringify({
+      buyerEmail:  buyerEmail,
+      productName: productName,
+      licenseKey:  licenseKey,
+      fileName:    fileName,
+      senderName:  senderName||'Reseller'
+    })
+  });
+  const data = await res.json();
+  if(!res.ok||!data.success) throw new Error(data.message||'Delivery gagal');
+  return data;
+}
+
+
 // Supabase client
-const { createClient } = supabase;
-const sb = createClient(SUPA_URL, SUPA_KEY);
+var sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 // ═══ PRODUCT CONFIG ═══
 const PRODUCTS = [
@@ -635,22 +689,19 @@ sb.auth.getSession().then(async ({ data }) => {
 
 // ═══ INIT APP ═══
 function initApp(){
+  loadProductFiles();
   gi('login-page').style.display = 'none';
   gi('app').style.display = 'block';
-  gi('tb-uname').textContent = resellerData.username || resellerData.email;
-  gi('tb-av').textContent = (resellerData.username || 'R')[0].toUpperCase();
+  gi('tb-uname').textContent = RS.username || RS.email || '?';
+  gi('tb-av').textContent = (RS.username || RS.email || 'R')[0].toUpperCase();
   loadAll();
 }
 
 async function loadAll(){
-  await loadInventory();
-  await loadTransactions();
-  await loadLicenses();
-  renderDashboard();
-  renderInventoryPage();
-  renderTransactions();
-  renderLicenses();
-  renderAccount();
+  await loadInv();
+  await loadTrx();
+  await loadLics();
+  renderDash();renderInv();filterTrx();renderLics();renderAcc();renderGenProds();
   renderGenProducts();
 }
 
@@ -777,7 +828,7 @@ async function doGenerate(){
   if(rem<=0){ toast('Slot habis!','e'); btn.textContent='Generate & Kirim'; btn.disabled=false; return; }
 
   const prod    = PRODUCTS.find(p=>p.id===selectedProd);
-  const key     = generateKeyStr(prod.name);
+  const key = genKey();
   const durVal  = parseInt(gi('gen-dur').value)||null;
   const durUnit = gi('gen-dur-unit').value;
   let expiresAt = null;
@@ -791,12 +842,14 @@ async function doGenerate(){
 
   // 1. Insert to licenses table (Supabase — same as admin)
   const { error: licErr } = await sb.from('licenses').insert({
-    key:        key,
-    project:    prod.name,
-    active:     true,
-    used:       false,
-    status:     'available',
-    expires_at: expiresAt,
+    key:          key,
+    project:      prod.name,
+    active:       true,
+    used:         false,
+    status:       'available',
+    expires_at:   expiresAt,
+    generated_by: RS ? (RS.username||RS.email) : 'reseller',
+    created_at:   new Date().toISOString(),
   });
   if(licErr){ toast('Gagal simpan license: '+licErr.message,'e'); btn.textContent='Generate & Kirim'; btn.disabled=false; return; }
 
@@ -827,20 +880,18 @@ async function doGenerate(){
   await sb.from('reseller_inventory').update({ used: (inv.used||0)+1 })
     .eq('reseller_id', resellerData.id).eq('product_id', selectedProd);
 
-  // 5. Send email (Railway endpoint — if available)
-  let emailSent = false;
-  try {
-    const emailRes = await fetch(SUPA_URL+'/functions/v1/send-license', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
-      body: JSON.stringify({ to: email, key, product: prod.name, expires_at: expiresAt })
-    });
-    emailSent = emailRes.ok;
-    if(emailSent){
-      await sb.from('reseller_transactions').update({ email_sent:true })
-        .eq('reseller_id', resellerData.id).eq('license_key', key);
-    }
-  } catch(_){}
+  // 5. Kirim produk + license via Railway (identik admin panel)
+  var emailSent = false;
+  try{
+    await sendProductViaRailway(email, prod.name, key, resellerData.username||resellerData.email);
+    emailSent = true;
+    // Update email_sent status
+    await sb.from('reseller_transactions').update({email_sent:true})
+      .eq('reseller_id', resellerData.id).eq('license_key', key);
+  }catch(emailErr){
+    console.warn('[RS] Email delivery error:', emailErr.message);
+    toast('License dibuat. Pengiriman email gagal: '+emailErr.message, 'w', 4000);
+  }
 
   // 6. Show success
   const content = `<div style="margin-bottom:6px;"><span style="color:var(--t2);">Produk: </span>${prod.name}</div>
@@ -862,10 +913,15 @@ async function doGenerate(){
   await loadAll();
 }
 
-function generateKeyStr(productName){
-  const prefix = productName.replace(/\s+/g,'').substring(0,4).toUpperCase();
-  const rand = () => Math.random().toString(36).substring(2,7).toUpperCase();
-  return `${prefix}-${rand()}-${rand()}-${rand()}`;
+/* Key format identik admin: MDZZ-XXXX-XXXX-XXXX
+   Charset tanpa I,O,0,1 untuk menghindari kebingungan */
+function genKey(){
+  var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var seg=function(n){var s='';for(var i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s;};
+  return 'MDZZ-'+seg(4)+'-'+seg(4)+'-'+seg(4);
+}
+function generateKeyStr(){ return genKey(); } // backward compat
+-${rand()}-${rand()}-${rand()}`;
 }
 
 // ═══ RENDER TRANSACTIONS ═══
@@ -912,6 +968,56 @@ function renderAccount(){
       <span style="font-size:8.5px;color:var(--t2);letter-spacing:.1em;text-transform:uppercase;">${l}</span>
       <span style="font-size:10px;font-weight:600;">${v}</span>
     </div>`).join('');
+}
+
+
+/* ════ Transaction search + filter ════ */
+var _trxPage = 1;
+var _trxPerPage = 20;
+
+function filterTrx(){
+  _trxPage = 1;
+  renderTrx();
+}
+
+function renderTrx(){
+  var search = ((document.getElementById('trx-search')||{}).value||'').toLowerCase();
+  var prodF  = ((document.getElementById('trx-filter-prod')||{}).value||'');
+  var filtered = TRX.filter(function(t){
+    var matchSearch = !search ||
+      (t.buyer_email||'').toLowerCase().includes(search)||
+      (t.license_key||'').toLowerCase().includes(search)||
+      (t.product_name||'').toLowerCase().includes(search);
+    var matchProd = !prodF || t.product_name === prodF;
+    return matchSearch && matchProd;
+  });
+  var total = filtered.length;
+  var start = (_trxPage-1)*_trxPerPage;
+  var paged = filtered.slice(start, start+_trxPerPage);
+  var tbody = document.getElementById('trx-rows');
+  if(!tbody) return;
+  tbody.innerHTML = paged.length
+    ? paged.map(function(t){
+        return '<tr>'+
+          '<td>'+fd(t.created_at)+'</td>'+
+          '<td><span class="bge bge-i">'+( t.product_name||'-' )+'</span></td>'+
+          '<td style="color:var(--t2);font-size:8px;">'+(t.buyer_email||'-')+'</td>'+
+          '<td style="font-size:7.5px;color:var(--sky2);user-select:all;">'+(t.license_key||'-')+'</td>'+
+          '<td><span class="bge '+(t.email_sent?'bge-ok':'bge-w')+'">'+(t.email_sent?'Terkirim':'Pending')+'</span></td>'+
+          '<td style="color:var(--grn);">'+rp(t.amount)+'</td>'+
+        '</tr>';
+      }).join('')
+    : '<tr><td colspan="6" style="text-align:center;color:var(--t3);padding:20px;">Tidak ada transaksi</td></tr>';
+  // Pagination info
+  var pag = document.getElementById('trx-pagination');
+  if(pag){
+    var totalPages = Math.ceil(total/_trxPerPage)||1;
+    pag.innerHTML = '<span>'+total+' transaksi | Halaman '+_trxPage+'/'+totalPages+'</span>'+
+      '<div style="display:flex;gap:6px;">'+
+      (_trxPage>1?'<button class="btn btn-s btn-sm" onclick="_trxPage--;renderTrx()">← Prev</button>':'')+
+      (_trxPage<totalPages?'<button class="btn btn-s btn-sm" onclick="_trxPage++;renderTrx()">Next →</button>':'')+
+      '</div>';
+  }
 }
 
 // ═══ NAVIGATION ═══
