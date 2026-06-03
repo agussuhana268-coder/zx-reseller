@@ -455,10 +455,10 @@ tr:last-child td{border-bottom:none;}
   <div class="mo-box">
     <div class="mo-close" onclick="closeModal('mo-create')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
     <div class="mo-title">Buat Reseller Baru</div>
-    <div class="mo-sub">Buat profil reseller. Akun login dibuat manual via Supabase Auth, lalu isi user_id di bawah.</div>
-    <div class="fg"><label class="fl">Username</label><input class="fi" id="cr-username" placeholder="nama_reseller"/></div>
-    <div class="fg"><label class="fl">Email</label><input class="fi" id="cr-email" type="email" placeholder="reseller@email.com"/></div>
-    <div class="fg"><label class="fl">User ID (dari Supabase Auth)</label><input class="fi" id="cr-uid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"/><div style="font-size:7.5px;color:var(--t3);margin-top:4px;">Buat user di Supabase → Auth → Add User → copy user_id</div></div>
+    <div class="mo-sub">Isi form berikut. Akun login Supabase otomatis dibuat — reseller langsung bisa login.</div>
+    <div class="fg"><label class="fl">Username</label><input class="fi" id="cr-username" placeholder="nama_reseller" autocomplete="off"/></div>
+    <div class="fg"><label class="fl">Email</label><input class="fi" id="cr-email" type="email" placeholder="reseller@email.com" autocomplete="off"/></div>
+    <div class="fg"><label class="fl">Password</label><input class="fi" id="cr-pass" type="password" placeholder="Min 6 karakter" autocomplete="new-password"/></div>
     <div class="fg">
       <label class="fl">Slot Awal per Produk</label>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
@@ -955,29 +955,79 @@ async function addSlots(rsId,prodId,currentAlloc,currentUsed){
 /* Buat reseller */
 function openCreateReseller(){gi('cr-err').textContent='';gi('mo-create').classList.add('vis');}
 async function submitCreateReseller(){
-  var username=(gi('cr-username').value||'').trim();
-  var email=(gi('cr-email').value||'').trim();
-  var uid=(gi('cr-uid').value||'').trim();
-  var errEl=gi('cr-err');errEl.textContent='';
-  if(!username||!email||!uid){errEl.textContent='Semua field wajib diisi.';return;}
-  gi('cr-btn').disabled=true;gi('cr-btn').textContent='Memproses...';
+  var username = (gi('cr-username').value||'').trim();
+  var email    = (gi('cr-email').value||'').trim();
+  var pass     = (gi('cr-pass').value||'').trim();
+  var errEl    = gi('cr-err');
+  errEl.textContent = '';
+
+  if(!username||!email||!pass){errEl.textContent='Semua field wajib diisi.';return;}
+  if(pass.length < 6){errEl.textContent='Password minimal 6 karakter.';return;}
+  if(!email.includes('@')){errEl.textContent='Format email tidak valid.';return;}
+
+  gi('cr-btn').disabled=true;gi('cr-btn').textContent='Membuat akun...';
+
   try{
-    var r=await sb.from('resellers').insert({user_id:uid,username:username,email:email,status:'active',created_at:new Date().toISOString()});
-    if(r.error)throw new Error(r.error.message);
-    var newRs=await sb.from('resellers').select('id').eq('user_id',uid).single();
-    if(!newRs.data)throw new Error('Gagal ambil ID reseller baru');
-    var rsId=newRs.data.id;
-    var slots=PRODS.map(function(p){
-      var val=parseInt((gi('cr-s-'+p.id)||{}).value||p.slot)||p.slot;
-      return {reseller_id:rsId,product_id:p.id,allocated:val,used:0};
+    /* Pakai client terpisah agar sesi owner tidak terpengaruh */
+    var sbTemp = supabase.createClient(SUPA_URL, SUPA_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+    });
+
+    /* 1. Buat akun Auth Supabase */
+    var signupRes = await sbTemp.auth.signUp({ email: email, password: pass });
+
+    if(signupRes.error){
+      /* Jika email sudah ada di Auth */
+      if(signupRes.error.message.toLowerCase().includes('already')||
+         signupRes.error.message.toLowerCase().includes('exist')){
+        errEl.textContent = 'Email sudah terdaftar di Supabase Auth.';
+      } else {
+        errEl.textContent = 'Auth error: ' + signupRes.error.message;
+      }
+      gi('cr-btn').disabled=false; gi('cr-btn').textContent='Buat Reseller';
+      return;
+    }
+
+    var uid = signupRes.data.user ? signupRes.data.user.id : null;
+    if(!uid){
+      errEl.textContent='Gagal mendapat user_id dari Auth. Cek apakah email sudah ada.';
+      gi('cr-btn').disabled=false; gi('cr-btn').textContent='Buat Reseller';
+      return;
+    }
+
+    /* 2. Insert profil reseller */
+    var insRes = await sb.from('resellers').insert({
+      user_id:    uid,
+      username:   username,
+      email:      email,
+      status:     'active',
+      created_at: new Date().toISOString()
+    });
+    if(insRes.error) throw new Error('Gagal simpan profil: ' + insRes.error.message);
+
+    /* 3. Ambil id reseller yang baru dibuat */
+    var newRs = await sb.from('resellers').select('id').eq('user_id', uid).single();
+    if(!newRs.data) throw new Error('Gagal ambil ID reseller baru');
+    var rsId = newRs.data.id;
+
+    /* 4. Init slot inventory */
+    var slots = PRODS.map(function(p){
+      var val = parseInt((gi('cr-s-'+p.id)||{}).value||p.slot)||p.slot;
+      return {reseller_id:rsId, product_id:p.id, allocated:val, used:0};
     });
     await sb.from('reseller_inventory').insert(slots);
-    toast('Reseller "'+username+'" berhasil dibuat!','ts');
+
+    /* 5. Selesai */
+    toast('✓ Reseller "'+username+'" berhasil dibuat! Reseller bisa langsung login.','ts',4000);
     closeModal('mo-create');
-    gi('cr-username').value='';gi('cr-email').value='';gi('cr-uid').value='';
+    gi('cr-username').value='';gi('cr-email').value='';gi('cr-pass').value='';
     PRODS.forEach(function(p){var el=gi('cr-s-'+p.id);if(el)el.value=p.slot;});
     loadResellers();
-  }catch(e){errEl.textContent='Error: '+e.message;}
+
+  }catch(e){
+    errEl.textContent = 'Error: ' + e.message;
+  }
+
   gi('cr-btn').disabled=false;gi('cr-btn').textContent='Buat Reseller';
 }
 
