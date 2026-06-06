@@ -357,6 +357,86 @@ body::after{display:none;}
   .rs-acc-stats-row{grid-template-columns:repeat(2,1fr);}
 }
 
+
+/* ══ SUPPORT PAGE ══ */
+.sup-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sup-col{display:flex;flex-direction:column;gap:12px;}
+.sup-card{overflow:hidden;}
+.sup-card-hd{
+  display:flex;align-items:center;gap:9px;
+  padding:12px 15px;border-bottom:1px solid var(--bdr3);
+  font-family:var(--hud);font-size:8.5px;font-weight:700;
+  color:var(--t1);letter-spacing:.5px;
+}
+.sup-card-hd svg{width:15px;height:15px;stroke:var(--sky);fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0;}
+.sup-card-body{padding:14px;}
+
+/* Contact rows */
+.sup-contact-row{
+  display:flex;align-items:center;gap:12px;
+  border-radius:10px;padding:13px;margin-bottom:8px;
+  cursor:pointer;transition:all .15s;text-decoration:none;
+}
+.sup-contact-row:last-child{margin-bottom:0;}
+.sup-wa{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);}
+.sup-wa:hover{background:rgba(16,185,129,.11);}
+.sup-email{background:rgba(14,165,233,.05);border:1px solid var(--bdr);}
+.sup-email:hover{background:rgba(14,165,233,.1);}
+.sup-contact-ico{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sup-contact-info{flex:1;}
+.sup-contact-name{font-size:10px;font-weight:600;color:var(--t1);margin-bottom:2px;}
+.sup-contact-val{font-size:9px;color:var(--sky);font-weight:600;margin-bottom:1px;}
+.sup-contact-tag{font-size:7.5px;color:var(--t2);}
+.sup-arrow{width:14px;height:14px;stroke:var(--t3);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;}
+
+/* Guide list */
+.sup-guide-list{display:flex;flex-direction:column;gap:12px;}
+.sup-guide-item{display:flex;gap:11px;align-items:flex-start;}
+.sup-guide-num{
+  width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,var(--b1),var(--sky));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--hud);font-size:9px;font-weight:700;color:#fff;
+  flex-shrink:0;margin-top:1px;
+}
+.sup-guide-title{font-size:9.5px;font-weight:600;color:var(--t1);margin-bottom:3px;}
+.sup-guide-desc{font-size:8px;color:var(--t2);line-height:1.6;}
+
+/* FAQ */
+.sup-faq-item{border:1px solid var(--bdr);border-radius:9px;overflow:hidden;margin-bottom:7px;}
+.sup-faq-item:last-child{margin-bottom:0;}
+.sup-faq-q{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 13px;cursor:pointer;background:rgba(56,189,248,.03);
+  transition:background .15s;
+}
+.sup-faq-q:hover{background:rgba(56,189,248,.07);}
+.sup-faq-qtxt{font-size:9px;font-weight:600;color:var(--t1);}
+.sup-faq-ic{width:13px;height:13px;stroke:var(--t2);fill:none;stroke-width:2;stroke-linecap:round;transition:transform .2s;flex-shrink:0;}
+.sup-faq-a{display:none;padding:10px 13px;font-size:8.5px;color:var(--t2);line-height:1.7;border-top:1px solid var(--bdr3);}
+
+/* Changelog */
+.sup-changelog{display:flex;flex-direction:column;gap:0;padding-left:14px;border-left:2px solid var(--bdr);}
+.sup-clog-item{position:relative;padding:0 0 16px 16px;}
+.sup-clog-item:last-child{padding-bottom:0;}
+.sup-clog-dot{
+  position:absolute;left:-7px;top:3px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--bg2);border:2px solid var(--bdr2);
+}
+.sup-clog-item.active .sup-clog-dot{background:var(--sky);border-color:var(--sky2);box-shadow:0 0 8px rgba(14,165,233,.4);}
+.sup-clog-ver{font-size:9px;font-weight:600;color:var(--t1);margin-bottom:3px;}
+.sup-clog-item.active .sup-clog-ver{color:var(--sky2);}
+.sup-clog-desc{font-size:8px;color:var(--t2);line-height:1.6;}
+.sup-clog-date{font-size:7.5px;color:var(--t3);margin-top:3px;}
+
+/* Mobile */
+@media(max-width:768px){
+  .sup-layout{grid-template-columns:1fr;}
+  .sup-contact-row{padding:11px;}
+  .sup-contact-ico{width:36px;height:36px;}
+}
+
 </style>
 </head>
 <body>
@@ -413,7 +493,11 @@ body::after{display:none;}
     <div class="ni" onclick="go(this,'licenses')"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span class="ni-lbl">Licenses</span></div>
     <div class="sb-sec">AKUN</div>
     <div class="ni" onclick="go(this,'account')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="ni-lbl">Akun</span></div>
-    <div class="ni owner-only" id="sb-owner" onclick="go(this,'owner')"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="ni-lbl">Owner Panel</span></div>
+    <div class="ni owner-only" id="sb-owner" onclick="go(this,'support')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg>
+        <span class="ni-lbl">Support</span>
+      </div>
+      <div class="ni owner-only" onclick="go(this,'owner')"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="ni-lbl">Owner Panel</span></div>
   </nav>
 
   <!-- Main -->
@@ -592,6 +676,128 @@ body::after{display:none;}
       </div>
     </div>
 
+
+    <!-- SUPPORT -->
+    <div class="pg" id="pg-support">
+      <div class="pg-hd">
+        <div><div class="pg-title">Support</div><div class="pg-sub">BANTUAN · PANDUAN · KONTAK</div></div>
+      </div>
+
+      <div class="sup-layout">
+
+        <!-- Kontak -->
+        <div class="sup-col">
+          <div class="card sup-card">
+            <div class="sup-card-hd">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              KONTAK LANGSUNG
+            </div>
+            <div class="sup-card-body">
+              <a href="https://wa.me/6287833947151" target="_blank" class="sup-contact-row sup-wa">
+                <div class="sup-contact-ico">
+                  <svg viewBox="0 0 24 24" style="fill:var(--grn);width:20px;height:20px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                </div>
+                <div class="sup-contact-info">
+                  <div class="sup-contact-name">WhatsApp Developer</div>
+                  <div class="sup-contact-val">+62 878-3394-7151</div>
+                  <div class="sup-contact-tag">Chat langsung · Respons cepat</div>
+                </div>
+                <svg viewBox="0 0 24 24" class="sup-arrow"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+
+              <div class="sup-contact-row sup-email" onclick="supCopy('mdzzxiters@gmail.com')">
+                <div class="sup-contact-ico">
+                  <svg viewBox="0 0 24 24" style="stroke:var(--sky);fill:none;stroke-width:1.8;stroke-linecap:round;width:20px;height:20px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                <div class="sup-contact-info">
+                  <div class="sup-contact-name">Email Developer</div>
+                  <div class="sup-contact-val">mdzzxiters@gmail.com</div>
+                  <div class="sup-contact-tag">Klik untuk copy</div>
+                </div>
+                <svg viewBox="0 0 24 24" class="sup-arrow"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panduan Reseller -->
+          <div class="card sup-card">
+            <div class="sup-card-hd">
+              <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              PANDUAN RESELLER
+            </div>
+            <div class="sup-card-body">
+              <div class="sup-guide-list">
+                <div class="sup-guide-item">
+                  <div class="sup-guide-num">1</div>
+                  <div><div class="sup-guide-title">Generate License</div><div class="sup-guide-desc">Pilih produk → isi email pembeli → pilih file → klik Generate & Kirim. License otomatis dikirim ke email pembeli.</div></div>
+                </div>
+                <div class="sup-guide-item">
+                  <div class="sup-guide-num">2</div>
+                  <div><div class="sup-guide-title">Cek Slot</div><div class="sup-guide-desc">Pantau halaman Inventory untuk melihat sisa slot per produk. Hubungi owner jika slot habis.</div></div>
+                </div>
+                <div class="sup-guide-item">
+                  <div class="sup-guide-num">3</div>
+                  <div><div class="sup-guide-title">Riwayat Transaksi</div><div class="sup-guide-desc">Semua license yang pernah dibuat bisa dilihat di halaman Transaksi dan License History.</div></div>
+                </div>
+                <div class="sup-guide-item">
+                  <div class="sup-guide-num">4</div>
+                  <div><div class="sup-guide-title">Foto Profil</div><div class="sup-guide-desc">Upload foto profil di halaman Akun. Foto tersimpan di cloud dan bisa dilihat oleh sistem.</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQ + Changelog -->
+        <div class="sup-col">
+          <div class="card sup-card">
+            <div class="sup-card-hd">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg>
+              FAQ
+            </div>
+            <div class="sup-card-body">
+              <div id="sup-faq-list"></div>
+            </div>
+          </div>
+
+          <div class="card sup-card">
+            <div class="sup-card-hd">
+              <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              CHANGELOG
+            </div>
+            <div class="sup-card-body">
+              <div class="sup-changelog">
+                <div class="sup-clog-item active">
+                  <div class="sup-clog-dot"></div>
+                  <div>
+                    <div class="sup-clog-ver">v1.2 — Support & Account</div>
+                    <div class="sup-clog-desc">Halaman Support, upload foto profil, space background, mobile layout fix</div>
+                    <div class="sup-clog-date">Jun 2026</div>
+                  </div>
+                </div>
+                <div class="sup-clog-item">
+                  <div class="sup-clog-dot"></div>
+                  <div>
+                    <div class="sup-clog-ver">v1.1 — Owner Panel</div>
+                    <div class="sup-clog-desc">Buat reseller otomatis, kelola slot, suspend/aktifkan akun</div>
+                    <div class="sup-clog-date">Mei 2026</div>
+                  </div>
+                </div>
+                <div class="sup-clog-item">
+                  <div class="sup-clog-dot"></div>
+                  <div>
+                    <div class="sup-clog-ver">v1.0 — Initial Release</div>
+                    <div class="sup-clog-desc">Dashboard, Inventory, Generate License, Transaksi, License History</div>
+                    <div class="sup-clog-date">Apr 2026</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
     <!-- OWNER PANEL -->
     <div class="pg" id="pg-owner">
       <div class="pg-hd">
@@ -626,6 +832,10 @@ body::after{display:none;}
       <div class="bn" onclick="goBn(this,'inventory')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><span class="bn-lbl">Slot</span></div>
       <div class="bn" onclick="goBn(this,'generate')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span class="bn-lbl">Generate</span></div>
       <div class="bn" onclick="goBn(this,'transactions')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="bn-lbl">Transaksi</span></div>
+      <div class="bn" onclick="goBn(this,'support')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg>
+        <span class="bn-lbl">Support</span>
+      </div>
       <div class="bn" onclick="goBn(this,'account')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bn-lbl">Akun</span></div>
       <div class="bn owner-only" id="bn-owner" onclick="goBn(this,'owner')"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="bn-lbl">Owner</span></div>
     </div>
@@ -1253,6 +1463,7 @@ async function submitCreateReseller(){
 /* ═══ NAVIGATION ═══ */
 function go(el,page){
   if(page==='account'){setTimeout(function(){renderAcc();rsLoadPhoto();},80);}
+  if(page==='support'){setTimeout(initSupport,80);}
   document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
   el.classList.add('on');
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
@@ -1261,6 +1472,7 @@ function go(el,page){
 }
 function goBn(el,page){
   if(page==='account'){setTimeout(function(){renderAcc();rsLoadPhoto();},80);}
+  if(page==='support'){setTimeout(initSupport,80);}
   document.querySelectorAll('.bn').forEach(function(n){n.classList.remove('on');});
   el.classList.add('on');
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
@@ -1388,6 +1600,44 @@ function renderAcc(){
   /* Load photo */
   rsLoadPhoto();
 }
+
+
+/* ══ SUPPORT PAGE ══ */
+var _supInit = false;
+function initSupport(){
+  if(_supInit) return;
+  _supInit = true;
+  var faqs = [
+    ['Slot saya habis, bagaimana cara tambah?','Hubungi owner melalui WhatsApp atau email. Owner akan menambah slot kamu melalui panel owner.'],
+    ['Email ke pembeli tidak terkirim?','Cek koneksi internet, lalu pastikan nama file produk sesuai. Jika masih gagal, hubungi developer.'],
+    ['Bisakah saya lihat key milik reseller lain?','Tidak. Setiap reseller hanya bisa melihat data miliknya sendiri.'],
+    ['Bagaimana cara ganti foto profil?','Buka halaman Akun → klik lingkaran foto → pilih foto dari galeri. Foto langsung tersimpan ke cloud.'],
+    ['Saya lupa password, apa yang harus dilakukan?','Hubungi owner untuk reset password. Owner bisa reset melalui panel Supabase Auth.'],
+    ['Key yang dibuat bisa dipakai di berapa device?','Tergantung produk. ZX CORE & APEX: 2 slot device. ZX EXCLUSIVE: 4 slot device.'],
+  ];
+  var el = document.getElementById('sup-faq-list');
+  if(!el) return;
+  el.innerHTML = faqs.map(function(f, i){
+    return '<div class="sup-faq-item">'+
+      '<div class="sup-faq-q" onclick="supFaqToggle(this)">'+
+        '<span class="sup-faq-qtxt">'+f[0]+'</span>'+
+        '<svg class="sup-faq-ic" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>'+
+      '</div>'+
+      '<div class="sup-faq-a">'+f[1]+'</div>'+
+    '</div>';
+  }).join('');
+}
+function supFaqToggle(el){
+  var ans=el.nextElementSibling, ic=el.querySelector('.sup-faq-ic');
+  var open=ans.style.display==='block';
+  ans.style.display=open?'none':'block';
+  ic.style.transform=open?'':'rotate(180deg)';
+}
+function supCopy(text){
+  navigator.clipboard.writeText(text)
+    .then(function(){toast('Disalin: '+text,'ts');})
+    .catch(function(){toast('Gagal copy','te');});
+}
 </script>
 <script>
 
@@ -1395,33 +1645,94 @@ function renderAcc(){
 (function(){
   var cv=document.createElement('canvas');cv.id='space-canvas';
   document.body.insertBefore(cv,document.body.firstChild);
-  var ctx=cv.getContext('2d'),W,H,stars=[],nebulas=[],frame=0;
+  var ctx=cv.getContext('2d'),W,H,stars=[],nebulas=[],streaks=[],frame=0;
   function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
   window.addEventListener('resize',resize,{passive:true});resize();
-  function mkStar(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.2,vx:(Math.random()-.5)*.07,vy:(Math.random()-.5)*.06,a:Math.random()*.7+.1,da:(Math.random()-.5)*.003,hue:Math.random()<.7?210:Math.random()<.5?190:270};}
-  function mkNeb(){var hues=[210,220,250,195,270];return{x:Math.random()*W,y:Math.random()*H,rx:Math.random()*160+80,ry:Math.random()*90+45,a:Math.random()*.04+.01,hue:hues[Math.floor(Math.random()*hues.length)],vx:(Math.random()-.5)*.035,vy:(Math.random()-.5)*.028,rot:Math.random()*Math.PI};}
-  for(var i=0;i<110;i++)stars.push(mkStar());
-  for(var j=0;j<5;j++)nebulas.push(mkNeb());
+
+  /* Stars — lebih banyak, lebih cerah, lebih cepat */
+  function mkStar(){
+    var speed=Math.random()<.15?.28:.12; /* 15% bintang bergerak lebih cepat */
+    return{
+      x:Math.random()*W,y:Math.random()*H,
+      r:Math.random()*1.8+.3,
+      vx:(Math.random()-.5)*speed,vy:(Math.random()-.5)*speed*.8,
+      a:Math.random()*.85+.15,
+      aMin:.1,aMax:.9+Math.random()*.08,
+      da:(Math.random()*.005+.002)*(Math.random()<.5?1:-1),
+      hue:Math.random()<.6?210:Math.random()<.6?195:260,
+      sat:88+Math.floor(Math.random()*12)
+    };
+  }
+
+  /* Nebulas — lebih terang, alpha lebih tinggi */
+  function mkNeb(){
+    return{
+      x:Math.random()*W,y:Math.random()*H,
+      rx:Math.random()*220+100,ry:Math.random()*120+60,
+      a:Math.random()*.1+.06,           /* lebih terang */
+      hue:[210,220,245,195,260,200][Math.floor(Math.random()*6)],
+      sat:95,
+      vx:(Math.random()-.5)*.06,vy:(Math.random()-.5)*.05,
+      rot:Math.random()*Math.PI
+    };
+  }
+
+  /* Shooting streaks — sesekali lewat */
+  function mkStreak(){
+    return{x:-50,y:Math.random()*H*.6,vx:8+Math.random()*6,vy:.5+Math.random()*1.5,life:1,maxLife:Math.random()*30+20,w:80+Math.random()*60};
+  }
+
+  for(var i=0;i<150;i++)stars.push(mkStar());
+  for(var j=0;j<6;j++)nebulas.push(mkNeb());
+
+  /* Tambah glow di CSS juga */
+  cv.style.filter='brightness(1.35) saturate(1.2)';
+
   function draw(){
-    requestAnimationFrame(draw);frame++;if(frame%2!==0)return;
+    requestAnimationFrame(draw);
+    /* Nebulas & bintang: setiap frame — smooth */
     ctx.clearRect(0,0,W,H);
+
+    /* Nebula */
     nebulas.forEach(function(n){
-      n.x+=n.vx;n.y+=n.vy;
+      n.x+=n.vx;n.y+=n.vy;n.rot+=.0008;
       if(n.x<-n.rx)n.x=W+n.rx;if(n.x>W+n.rx)n.x=-n.rx;
       if(n.y<-n.ry)n.y=H+n.ry;if(n.y>H+n.ry)n.y=-n.ry;
       ctx.save();ctx.translate(n.x,n.y);ctx.rotate(n.rot);
       var g=ctx.createRadialGradient(0,0,0,0,0,n.rx);
-      g.addColorStop(0,'hsla('+n.hue+',90%,65%,'+n.a+')');
+      g.addColorStop(0,'hsla('+n.hue+','+n.sat+'%,70%,'+n.a+')');
+      g.addColorStop(.5,'hsla('+n.hue+','+n.sat+'%,55%,'+(n.a*.4)+')');
       g.addColorStop(1,'hsla('+n.hue+',80%,40%,0)');
       ctx.scale(1,n.ry/n.rx);ctx.beginPath();ctx.arc(0,0,n.rx,0,Math.PI*2);
       ctx.fillStyle=g;ctx.fill();ctx.restore();
     });
+
+    /* Bintang */
     stars.forEach(function(s){
       s.x+=s.vx;s.y+=s.vy;s.a+=s.da;
-      if(s.a<=.05||s.a>=.85)s.da*=-1;
+      if(s.a<=s.aMin||s.a>=s.aMax)s.da*=-1;
       if(s.x<0)s.x=W;if(s.x>W)s.x=0;if(s.y<0)s.y=H;if(s.y>H)s.y=0;
+      /* Glow untuk bintang besar */
+      if(s.r>1.2){
+        ctx.beginPath();ctx.arc(s.x,s.y,s.r*2.5,0,Math.PI*2);
+        ctx.fillStyle='hsla('+s.hue+','+s.sat+'%,85%,'+(s.a*.2)+')';ctx.fill();
+      }
       ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle='hsla('+s.hue+',90%,85%,'+s.a+')';ctx.fill();
+      ctx.fillStyle='hsla('+s.hue+','+s.sat+'%,90%,'+s.a+')';ctx.fill();
+    });
+
+    /* Shooting star — random */
+    frame++;
+    if(frame%180===0&&Math.random()<.6)streaks.push(mkStreak());
+    streaks.forEach(function(sk,idx){
+      sk.x+=sk.vx;sk.y+=sk.vy;sk.life--;
+      if(sk.life<=0){streaks.splice(idx,1);return;}
+      var alpha=sk.life/sk.maxLife*.7;
+      var g2=ctx.createLinearGradient(sk.x,sk.y,sk.x-sk.w,sk.y-sk.w*.2);
+      g2.addColorStop(0,'rgba(255,255,255,'+alpha+')');
+      g2.addColorStop(1,'rgba(100,200,255,0)');
+      ctx.strokeStyle=g2;ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(sk.x,sk.y);ctx.lineTo(sk.x-sk.w,sk.y-sk.w*.2);ctx.stroke();
     });
   }
   draw();
