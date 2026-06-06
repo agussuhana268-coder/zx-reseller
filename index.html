@@ -56,18 +56,71 @@ input,select,textarea{font-family:var(--mono);outline:none;color:var(--t1);}
 #pg-app{display:none;min-height:100vh;}
 
 /* Topbar */
-.topbar{position:fixed;top:0;left:0;right:0;height:var(--nav);background:rgba(6,13,26,.94);border-bottom:1px solid var(--bdr3);display:flex;align-items:center;justify-content:space-between;padding:0 16px 0 20px;z-index:200;backdrop-filter:blur(12px);}
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--nav);
+  background:rgba(4,10,22,.92);
+  border-bottom:1px solid rgba(56,189,248,.08);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;z-index:200;backdrop-filter:blur(16px);
+  box-shadow:0 1px 20px rgba(0,0,0,.4);
+}
+/* Logo */
 .tb-left{display:flex;align-items:center;gap:10px;}
-.tb-brand{font-family:var(--hud);font-size:11px;font-weight:700;color:var(--sky2);letter-spacing:1.5px;}
-.tb-brand span{color:var(--t3);font-size:8px;font-weight:400;letter-spacing:1px;margin-left:6px;}
-.tb-owner-badge{font-size:7px;letter-spacing:.12em;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--gold);padding:2px 8px;border-radius:3px;text-transform:uppercase;display:none;}
+.tb-logo{display:flex;align-items:center;gap:10px;}
+.tb-logo-icon{
+  width:34px;height:34px;position:relative;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.tb-logo-icon svg{position:absolute;inset:0;width:100%;height:100%;}
+.tb-logo-letter{font-family:var(--hud);font-size:13px;font-weight:900;color:var(--sky2);position:relative;z-index:1;}
+.tb-logo-text{display:flex;flex-direction:column;line-height:1;}
+.tb-logo-zx{font-family:var(--hud);font-size:13px;font-weight:900;color:#fff;letter-spacing:2px;}
+.tb-logo-res{font-size:7px;color:var(--sky);letter-spacing:3px;font-weight:500;margin-top:1px;}
+.tb-owner-badge{
+  font-size:6.5px;letter-spacing:.15em;
+  background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.08));
+  border:1px solid rgba(245,158,11,.35);color:var(--gold);
+  padding:3px 9px;border-radius:20px;text-transform:uppercase;
+  display:none;font-weight:700;
+}
+/* User pill */
 .tb-right{display:flex;align-items:center;gap:8px;}
-.tb-user{display:flex;align-items:center;gap:7px;background:rgba(56,189,248,.05);border:1px solid var(--bdr);border-radius:8px;padding:5px 10px;}
-.tb-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--b1),var(--sky));display:flex;align-items:center;justify-content:center;font-family:var(--hud);font-size:10px;color:#fff;flex-shrink:0;}
-.tb-uname{font-size:9.5px;color:var(--t1);font-weight:600;}
-.tb-role{font-size:7px;color:var(--sky);letter-spacing:.1em;text-transform:uppercase;}
-.btn-out{padding:5px 11px;background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.18);border-radius:6px;font-size:8px;color:var(--rose);letter-spacing:.1em;transition:all .15s;}
-.btn-out:hover{background:rgba(244,63,94,.14);}
+.tb-user-pill{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(56,189,248,.06);
+  border:1px solid rgba(56,189,248,.12);
+  border-radius:20px;padding:4px 12px 4px 4px;
+  transition:all .15s;
+}
+.tb-user-pill:hover{background:rgba(56,189,248,.1);}
+.tb-av{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--b1),var(--sky));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--hud);font-size:10px;color:#fff;flex-shrink:0;
+  box-shadow:0 0 8px rgba(14,165,233,.3);
+  overflow:hidden;position:relative;
+}
+.tb-user-info{}
+.tb-uname{font-size:10px;color:var(--t1);font-weight:600;line-height:1.2;}
+.tb-role{font-size:7px;color:var(--sky);letter-spacing:.08em;text-transform:uppercase;}
+/* Logout icon btn */
+.tb-logout-btn{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.15);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--rose);transition:all .15s;
+}
+.tb-logout-btn:hover{background:rgba(244,63,94,.15);}
+.tb-logout-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
+/* Mobile topbar */
+@media(max-width:768px){
+  .topbar{padding:0 12px;}
+  .tb-logo-res{display:none;}
+  .tb-logo-zx{font-size:12px;}
+  .tb-logo-icon{width:30px;height:30px;}
+  .tb-uname{max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+}
 
 /* Desktop sidebar */
 .sidebar{position:fixed;left:0;top:var(--nav);bottom:0;width:var(--sb);background:rgba(6,13,26,.96);border-right:1px solid var(--bdr3);padding:10px 8px;z-index:100;overflow-y:auto;transition:transform .25s;}
@@ -437,6 +490,185 @@ body::after{display:none;}
   .sup-contact-ico{width:36px;height:36px;}
 }
 
+
+/* ══ TOPBAR REDESIGN ══ */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:200;
+  background:rgba(3,8,18,.92);
+  border-bottom:1px solid rgba(56,189,248,.07);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;
+  box-shadow:0 2px 24px rgba(0,0,0,.5);
+}
+/* Brand */
+.tb-brand-wrap{display:flex;align-items:center;gap:10px;}
+.tb-hex{
+  width:34px;height:34px;position:relative;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.tb-hex svg{position:absolute;inset:0;width:100%;height:100%;}
+.tb-hex-letter{
+  font-family:var(--hud);font-size:14px;font-weight:900;
+  color:var(--sky2);position:relative;z-index:1;
+  text-shadow:0 0 10px rgba(56,189,248,.4);
+}
+.tb-brand-text{}
+.tb-brand-main{
+  font-family:var(--hud);font-size:13px;font-weight:900;
+  color:var(--t1);letter-spacing:1.5px;line-height:1.1;
+}
+.tb-brand-main span{color:var(--sky2);}
+.tb-brand-sub{
+  font-size:6.5px;color:var(--t3);letter-spacing:3px;
+  text-transform:uppercase;margin-top:1px;
+}
+.tb-owner-badge{
+  font-size:6.5px;letter-spacing:.15em;font-weight:700;
+  background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.06));
+  border:1px solid rgba(245,158,11,.4);color:var(--gold);
+  padding:3px 10px;border-radius:20px;text-transform:uppercase;
+  display:none;white-space:nowrap;
+}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-right{display:flex;align-items:center;gap:7px;}
+/* User pill */
+.tb-user-pill{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(56,189,248,.05);
+  border:1px solid rgba(56,189,248,.1);
+  border-radius:22px;padding:4px 13px 4px 4px;
+  transition:background .15s;
+}
+.tb-user-pill:hover{background:rgba(56,189,248,.09);}
+.tb-av{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--b1),var(--sky));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--hud);font-size:10px;font-weight:700;color:#fff;
+  flex-shrink:0;overflow:hidden;position:relative;
+  box-shadow:0 0 10px rgba(14,165,233,.25);
+}
+.tb-user-meta{}
+.tb-uname{font-size:10px;color:var(--t1);font-weight:600;line-height:1.2;white-space:nowrap;}
+.tb-role{font-size:6.5px;color:var(--sky);letter-spacing:.1em;text-transform:uppercase;}
+/* Icon buttons */
+.tb-icon-btn{
+  width:34px;height:34px;border-radius:9px;
+  background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.1);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--t2);transition:all .15s;flex-shrink:0;
+}
+.tb-icon-btn:hover{background:rgba(56,189,248,.12);color:var(--t1);}
+.tb-icon-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;}
+.tb-logout{border-color:rgba(244,63,94,.12);background:rgba(244,63,94,.06);color:var(--rose);}
+.tb-logout:hover{background:rgba(244,63,94,.14);}
+/* Mobile topbar */
+@media(max-width:768px){
+  .topbar{padding:0 12px;}
+  .tb-brand-sub{display:none;}
+  .tb-brand-main{font-size:12px;}
+  .tb-hex{width:30px;height:30px;}
+  .tb-uname{max-width:72px;overflow:hidden;text-overflow:ellipsis;}
+  .tb-role{display:none;}
+}
+@media(max-width:360px){
+  .tb-brand-main span{display:none;}
+  .tb-user-pill{padding:4px 8px 4px 4px;}
+}
+
+
+/* ══ SETTINGS PAGE ══ */
+.sett-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sett-card{overflow:hidden;}
+.sett-card-hd{
+  display:flex;align-items:center;gap:11px;
+  padding:14px 16px;border-bottom:1px solid var(--bdr3);
+}
+.sett-card-ico{
+  width:34px;height:34px;border-radius:9px;
+  background:rgba(14,165,233,.08);border:1px solid rgba(56,189,248,.1);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sett-card-ico svg{width:15px;height:15px;stroke:var(--sky2);fill:none;stroke-width:1.8;stroke-linecap:round;}
+.sett-card-title{font-family:var(--hud);font-size:9.5px;font-weight:700;color:var(--t1);letter-spacing:.3px;}
+.sett-card-sub{font-size:7.5px;color:var(--t2);margin-top:2px;}
+.sett-card-body{padding:16px;}
+
+/* Avatar in settings */
+.sett-av-row{display:flex;align-items:center;gap:16px;}
+.sett-av-wrap{
+  position:relative;width:76px;height:76px;
+  cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+#sett-avatar{
+  width:76px;height:76px;border-radius:50%;
+  background:linear-gradient(135deg,var(--b1),var(--sky));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--hud);font-size:24px;font-weight:700;color:#fff;
+  overflow:hidden;position:relative;
+  border:2px solid rgba(56,189,248,.25);
+  box-shadow:0 0 18px rgba(14,165,233,.2);
+}
+.sett-av-ring{
+  position:absolute;inset:-8px;border-radius:50%;
+  border:1px solid rgba(56,189,248,.2);
+  animation:rsOrbit 8s linear infinite;
+  pointer-events:none;
+}
+.sett-av-ring::after{
+  content:'';position:absolute;width:5px;height:5px;border-radius:50%;
+  background:var(--sky2);box-shadow:0 0 6px var(--sky);
+  top:-2.5px;left:50%;transform:translateX(-50%);
+}
+.sett-av-edit{
+  position:absolute;bottom:0;right:0;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--sky);border:2px solid var(--bg2);
+  display:flex;align-items:center;justify-content:center;z-index:2;
+}
+.sett-av-info{}
+.sett-av-name{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:3px;}
+.sett-av-hint{font-size:7.5px;color:var(--t2);line-height:1.5;}
+
+/* Toggle row */
+.sett-toggle-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid var(--bdr3);
+}
+.sett-toggle-row:last-child{border-bottom:none;}
+.sett-toggle-lbl{font-size:9px;font-weight:600;color:var(--t1);}
+.sett-toggle-desc{font-size:7.5px;color:var(--t2);margin-top:1px;}
+.sett-badge-on{font-size:7.5px;color:var(--grn);background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);padding:3px 9px;border-radius:20px;}
+
+/* Switch toggle */
+.sett-switch{position:relative;width:38px;height:20px;flex-shrink:0;}
+.sett-switch input{opacity:0;width:0;height:0;}
+.sett-slider{
+  position:absolute;inset:0;border-radius:20px;
+  background:rgba(56,189,248,.15);border:1px solid var(--bdr);
+  transition:all .25s;cursor:pointer;
+}
+.sett-slider::before{
+  content:'';position:absolute;height:14px;width:14px;
+  left:2px;top:2px;border-radius:50%;
+  background:var(--t2);transition:.25s;
+}
+.sett-switch input:checked+.sett-slider{background:rgba(14,165,233,.2);border-color:var(--sky);}
+.sett-switch input:checked+.sett-slider::before{transform:translateX(18px);background:var(--sky2);}
+
+/* Security rows */
+.sett-sec-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--bdr3);}
+.sett-sec-row:last-child{border-bottom:none;}
+.sett-sec-label{font-size:9px;font-weight:600;color:var(--t1);}
+.sett-sec-val{font-size:7.5px;color:var(--t2);margin-top:2px;}
+
+@media(max-width:768px){
+  .sett-layout{grid-template-columns:1fr;}
+  .sett-av-row{flex-direction:column;align-items:flex-start;gap:12px;}
+}
+
 </style>
 </head>
 <body>
@@ -466,38 +698,60 @@ body::after{display:none;}
 <div id="pg-app">
 
   <!-- Topbar -->
-  <div class="topbar">
+    <div class="topbar">
     <div class="tb-left">
-      <div class="tb-brand">ZX <span>RESELLER</span></div>
-      <span class="tb-owner-badge" id="owner-badge">OWNER</span>
+      <!-- Brand -->
+      <div class="tb-brand-wrap">
+        <div class="tb-hex">
+          <svg viewBox="0 0 40 40" fill="none">
+            <polygon points="20,3 36,12 36,28 20,37 4,28 4,12" fill="rgba(14,165,233,.1)" stroke="rgba(56,189,248,.5)" stroke-width="1"/>
+            <polygon points="20,8 31,14.5 31,25.5 20,32 9,25.5 9,14.5" fill="none" stroke="rgba(56,189,248,.18)" stroke-width=".7"/>
+          </svg>
+          <span class="tb-hex-letter">R</span>
+        </div>
+        <div class="tb-brand-text">
+          <div class="tb-brand-main">ZX <span>RESELLER</span></div>
+          <div class="tb-brand-sub">PARTNER PANEL</div>
+        </div>
+      </div>
+      <div class="tb-owner-badge" id="owner-badge">OWNER</div>
     </div>
     <div class="tb-right">
-      <div class="tb-user">
+      <div class="tb-user-pill">
         <div class="tb-av" id="av">R</div>
-        <div>
+        <div class="tb-user-meta">
           <div class="tb-uname" id="uname">—</div>
           <div class="tb-role" id="urole">Reseller</div>
         </div>
       </div>
-      <button class="btn-out" onclick="doLogout()">LOGOUT</button>
+      <button class="tb-icon-btn" onclick="go(document.getElementById('sb-settings'),'settings')" title="Settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <button class="tb-icon-btn tb-logout" onclick="doLogout()" title="Logout">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
     </div>
   </div>
 
   <!-- Desktop Sidebar -->
   <nav class="sidebar" id="sidebar">
     <div class="sb-sec">MENU</div>
-    <div class="ni on"  onclick="go(this,'dashboard')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="ni-lbl">Dashboard</span></div>
-    <div class="ni" onclick="go(this,'inventory')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><span class="ni-lbl">Inventory</span></div>
-    <div class="ni" onclick="go(this,'generate')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span class="ni-lbl">Generate</span></div>
-    <div class="ni" onclick="go(this,'transactions')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg><span class="ni-lbl">Transaksi</span></div>
-    <div class="ni" onclick="go(this,'licenses')"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span class="ni-lbl">Licenses</span></div>
+    <div class="ni on"  onclick="go(this,'dashboard')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="ni-lbl">Dashboard</span></div>
+    <div class="ni" onclick="go(this,'inventory')"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span class="ni-lbl">Inventory</span></div>
+    <div class="ni" onclick="go(this,'generate')"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="ni-lbl">Generate</span></div>
+    <div class="ni" onclick="go(this,'transactions')"><svg viewBox="0 0 24 24"><path d="M3 3h18v4H3z"/><path d="M3 10h18v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10z"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="17" x2="13" y2="17"/></svg><span class="ni-lbl">Transaksi</span></div>
+    <div class="ni" onclick="go(this,'licenses')"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5 17 6l3 3-1.5 1.5"/></svg><span class="ni-lbl">Licenses</span></div>
     <div class="sb-sec">AKUN</div>
-    <div class="ni" onclick="go(this,'account')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="ni-lbl">Akun</span></div>
-    <div class="ni owner-only" id="sb-owner" onclick="go(this,'support')">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg>
+    <div class="ni" onclick="go(this,'account')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0 1 12 0v1"/><circle cx="12" cy="12" r="10" fill="none"/></svg><span class="ni-lbl">Akun</span></div>
+    <div class="ni owner-only" id="sb-owner" onclick="go(this,'settings')" id="sb-settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="ni-lbl">Settings</span>
+      </div>
+      <div class="ni" onclick="go(this,'support')">
+        <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
         <span class="ni-lbl">Support</span>
       </div>
-      <div class="ni owner-only" onclick="go(this,'owner')"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="ni-lbl">Owner Panel</span></div>
+      <div class="ni owner-only" onclick="go(this,'owner')"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg><span class="ni-lbl">Owner Panel</span></div>
   </nav>
 
   <!-- Main -->
@@ -585,7 +839,7 @@ body::after{display:none;}
         <div class="rs-acc-profile card">
           <!-- Avatar -->
           <div class="rs-av-center">
-            <div class="rs-av-wrap" id="rs-av-wrap" onclick="gi('rs-photo-inp').click()" title="Ganti foto profil">
+            <div class="rs-av-wrap" id="rs-av-wrap" onclick="go(document.getElementById('sb-settings'),'settings')" title="Atur foto di Settings">
               <div class="rs-av-ring"></div>
               <div class="rs-av-ring rs-av-ring2"></div>
               <div id="rs-avatar">
@@ -596,7 +850,7 @@ body::after{display:none;}
                 <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
               </div>
             </div>
-            <input type="file" id="rs-photo-inp" accept="image/*" style="display:none;" onchange="rsHandlePhoto(this)"/>
+            <div style="font-size:7.5px;color:var(--sky);margin-top:3px;text-align:center;cursor:pointer;" onclick="go(document.getElementById('sb-settings'),'settings')">Atur di Settings →</div>
             <div class="rs-av-hint">Klik foto untuk mengganti</div>
 
             <!-- Name + role below avatar -->
@@ -677,6 +931,105 @@ body::after{display:none;}
     </div>
 
 
+
+    <!-- SETTINGS -->
+    <div class="pg" id="pg-settings">
+      <div class="pg-hd">
+        <div><div class="pg-title">Settings</div><div class="pg-sub">PROFIL · KEAMANAN · PREFERENSI</div></div>
+      </div>
+      <div class="sett-layout">
+
+        <!-- Foto Profil -->
+        <div class="card sett-card">
+          <div class="sett-card-hd">
+            <div class="sett-card-ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div><div class="sett-card-title">Foto Profil</div><div class="sett-card-sub">Ubah foto yang tampil di panel</div></div>
+          </div>
+          <div class="sett-card-body">
+            <div class="sett-av-row">
+              <div class="sett-av-wrap" onclick="gi('sett-photo-inp').click()" title="Ganti foto">
+                <div class="sett-av-ring"></div>
+                <div id="sett-avatar">
+                  <span id="sett-av-init">R</span>
+                  <img id="sett-av-img" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;border-radius:50%;"/>
+                </div>
+                <div class="sett-av-edit">
+                  <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+                </div>
+              </div>
+              <input type="file" id="sett-photo-inp" accept="image/*" style="display:none;" onchange="settHandlePhoto(this)"/>
+              <div class="sett-av-info">
+                <div class="sett-av-name" id="sett-av-name">—</div>
+                <div class="sett-av-hint">Format: JPG, PNG, WEBP · Max 3MB</div>
+                <button class="btn btn-p btn-sm" style="margin-top:10px;" onclick="gi('sett-photo-inp').click()">
+                  <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Upload Foto
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Display Name -->
+        <div class="card sett-card">
+          <div class="sett-card-hd">
+            <div class="sett-card-ico"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><path d="M8 6v10"/><path d="M16 6v10"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+            <div><div class="sett-card-title">Nama Tampilan</div><div class="sett-card-sub">Nama yang terlihat di panel</div></div>
+          </div>
+          <div class="sett-card-body">
+            <div class="fg"><label class="fl">Username (tidak bisa diubah)</label>
+              <input class="fi" id="sett-username" disabled style="opacity:.5;" placeholder="@username"/>
+            </div>
+            <div class="fg"><label class="fl">Email Akun (tidak bisa diubah)</label>
+              <input class="fi" id="sett-email" disabled style="opacity:.5;" placeholder="email@domain.com"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifikasi -->
+        <div class="card sett-card">
+          <div class="sett-card-hd">
+            <div class="sett-card-ico"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+            <div><div class="sett-card-title">Preferensi</div><div class="sett-card-sub">Pengaturan tampilan panel</div></div>
+          </div>
+          <div class="sett-card-body">
+            <div class="sett-toggle-row">
+              <div><div class="sett-toggle-lbl">Mode Gelap</div><div class="sett-toggle-desc">Panel selalu mode gelap</div></div>
+              <div class="sett-badge-on">Aktif</div>
+            </div>
+            <div class="sett-toggle-row">
+              <div><div class="sett-toggle-lbl">Background Animasi</div><div class="sett-toggle-desc">Bintang bergerak di background</div></div>
+              <label class="sett-switch">
+                <input type="checkbox" id="sett-bg-toggle" checked onchange="settToggleBg(this)"/>
+                <span class="sett-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Keamanan -->
+        <div class="card sett-card">
+          <div class="sett-card-hd">
+            <div class="sett-card-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <div><div class="sett-card-title">Keamanan</div><div class="sett-card-sub">Informasi keamanan akun</div></div>
+          </div>
+          <div class="sett-card-body">
+            <div class="sett-sec-row">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--grn);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <div><div class="sett-sec-label">Supabase Auth</div><div class="sett-sec-val">Akun dilindungi autentikasi Supabase</div></div>
+            </div>
+            <div class="sett-sec-row">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--sky);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <div><div class="sett-sec-label">Data Terisolasi</div><div class="sett-sec-val">Hanya kamu yang bisa akses data ini</div></div>
+            </div>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bdr3);">
+              <div style="font-size:8px;color:var(--t3);">Untuk reset password, hubungi owner atau developer melalui halaman Support.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
     <!-- SUPPORT -->
     <div class="pg" id="pg-support">
       <div class="pg-hd">
@@ -828,15 +1181,15 @@ body::after{display:none;}
   <!-- Mobile Bottom Nav -->
   <div class="bot-nav">
     <div class="bot-nav-inner">
-      <div class="bn on" onclick="goBn(this,'dashboard')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="bn-lbl">Home</span></div>
-      <div class="bn" onclick="goBn(this,'inventory')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><span class="bn-lbl">Slot</span></div>
-      <div class="bn" onclick="goBn(this,'generate')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span class="bn-lbl">Generate</span></div>
-      <div class="bn" onclick="goBn(this,'transactions')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="bn-lbl">Transaksi</span></div>
-      <div class="bn" onclick="goBn(this,'support')">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg>
-        <span class="bn-lbl">Support</span>
+      <div class="bn on" onclick="goBn(this,'dashboard')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="bn-lbl">Home</span></div>
+      <div class="bn" onclick="goBn(this,'inventory')"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span class="bn-lbl">Slot</span></div>
+      <div class="bn" onclick="goBn(this,'generate')"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="bn-lbl">Generate</span></div>
+      <div class="bn" onclick="goBn(this,'transactions')"><svg viewBox="0 0 24 24"><path d="M3 3h18v4H3z"/><path d="M3 10h18v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10z"/><line x1="8" y1="14" x2="16" y2="14"/></svg><span class="bn-lbl">Transaksi</span></div>
+      <div class="bn" onclick="goBn(this,'settings')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="bn-lbl">Settings</span>
       </div>
-      <div class="bn" onclick="goBn(this,'account')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bn-lbl">Akun</span></div>
+      <div class="bn" onclick="goBn(this,'account')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0 1 12 0v1"/></svg><span class="bn-lbl">Akun</span></div>
       <div class="bn owner-only" id="bn-owner" onclick="goBn(this,'owner')"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="bn-lbl">Owner</span></div>
     </div>
   </div>
@@ -1464,6 +1817,7 @@ async function submitCreateReseller(){
 function go(el,page){
   if(page==='account'){setTimeout(function(){renderAcc();rsLoadPhoto();},80);}
   if(page==='support'){setTimeout(initSupport,80);}
+  if(page==='settings'){setTimeout(initSettings,80);}
   document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
   el.classList.add('on');
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
@@ -1473,6 +1827,7 @@ function go(el,page){
 function goBn(el,page){
   if(page==='account'){setTimeout(function(){renderAcc();rsLoadPhoto();},80);}
   if(page==='support'){setTimeout(initSupport,80);}
+  if(page==='settings'){setTimeout(initSettings,80);}
   document.querySelectorAll('.bn').forEach(function(n){n.classList.remove('on');});
   el.classList.add('on');
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
@@ -1638,106 +1993,117 @@ function supCopy(text){
     .then(function(){toast('Disalin: '+text,'ts');})
     .catch(function(){toast('Gagal copy','te');});
 }
+
+
+/* ══ SETTINGS PAGE ══ */
+var AVATAR_BUCKET = 'avatar';
+
+function initSettings(){
+  if(!RS) return;
+  /* Populate static fields */
+  var un = gi('sett-username'); if(un) un.value = '@'+(RS.username||'—');
+  var em = gi('sett-email');    if(em) em.value = RS.email||'—';
+  var nm = gi('sett-av-name');  if(nm) nm.textContent = RS.username||RS.email||'—';
+  /* Init avatar */
+  var ini = gi('sett-av-init'); if(ini) ini.textContent = (RS.username||RS.email||'R')[0].toUpperCase();
+  var url = RS.avatar_url||RS.avatarUrl;
+  if(url){
+    var img=gi('sett-av-img'); if(img){img.src=url+'?t='+Date.now();img.style.display='block';}
+    var init=gi('sett-av-init'); if(init)init.style.opacity='0';
+  }
+}
+
+async function settHandlePhoto(input){
+  var file=input.files[0]; if(!file) return;
+  if(file.size>3*1024*1024){toast('Foto max 3MB','te');return;}
+  if(!RS){toast('Login terlebih dahulu','te');return;}
+  var ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+  var filePath='rs_avatar_'+RS.id+'.'+ext;
+  toast('Mengunggah foto...','ti',2000);
+  try{
+    var res=await fetch(SUPA_URL+'/storage/v1/object/'+AVATAR_BUCKET+'/'+filePath,{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+SUPA_KEY,'apikey':SUPA_KEY,'x-upsert':'true','Content-Type':file.type},
+      body:file
+    });
+    if(!res.ok){var t=await res.text();var p={};try{p=JSON.parse(t);}catch(_){}throw new Error(p.message||'Upload gagal '+res.status);}
+    var publicUrl=SUPA_URL+'/storage/v1/object/public/'+AVATAR_BUCKET+'/'+filePath;
+    var displayUrl=publicUrl+'?t='+Date.now();
+    await sb.from('resellers').update({avatar_url:publicUrl}).eq('id',RS.id);
+    RS.avatar_url=publicUrl;
+    /* Update sett avatar */
+    var img=gi('sett-av-img');if(img){img.src=displayUrl;img.style.display='block';}
+    var init=gi('sett-av-init');if(init)init.style.opacity='0';
+    /* Update topbar avatar */
+    var tbAv=gi('av');if(tbAv){tbAv.style.backgroundImage='url("'+displayUrl+'")';tbAv.style.backgroundSize='cover';tbAv.style.color='transparent';}
+    /* Update account page avatar if loaded */
+    rsSetPhoto(displayUrl);
+    toast('Foto profil diperbarui ✓','ts');
+  }catch(err){
+    console.error('[settPhoto]',err);
+    toast('Gagal: '+(err.message||err),'te',4000);
+  }
+}
+
+function settToggleBg(el){
+  var cv=document.getElementById('space-canvas');
+  if(cv)cv.style.display=el.checked?'block':'none';
+}
 </script>
 <script>
-
-/* ══ SPACE BACKGROUND — optimized 30fps canvas ══ */
+/* ══ SPACE BACKGROUND — twinkling stars dark elegant ══ */
 (function(){
   var cv=document.createElement('canvas');cv.id='space-canvas';
   document.body.insertBefore(cv,document.body.firstChild);
-  var ctx=cv.getContext('2d'),W,H,stars=[],nebulas=[],streaks=[],frame=0;
+  var ctx=cv.getContext('2d'),W,H,stars=[],nebulas=[];
   function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
   window.addEventListener('resize',resize,{passive:true});resize();
 
-  /* Stars — lebih banyak, lebih cerah, lebih cepat */
+  var PALS=[
+    [0,0,96],[210,85,80],[215,90,65],[225,95,50],[195,75,72],[235,80,40]
+  ];
   function mkStar(){
-    var speed=Math.random()<.15?.28:.12; /* 15% bintang bergerak lebih cepat */
-    return{
-      x:Math.random()*W,y:Math.random()*H,
-      r:Math.random()*1.8+.3,
-      vx:(Math.random()-.5)*speed,vy:(Math.random()-.5)*speed*.8,
-      a:Math.random()*.85+.15,
-      aMin:.1,aMax:.9+Math.random()*.08,
-      da:(Math.random()*.005+.002)*(Math.random()<.5?1:-1),
-      hue:Math.random()<.6?210:Math.random()<.6?195:260,
-      sat:88+Math.floor(Math.random()*12)
-    };
+    var p=PALS[Math.floor(Math.random()*PALS.length)];
+    return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+.15,
+      vx:(Math.random()-.5)*.055,vy:(Math.random()-.5)*.045,
+      aMin:.02,aMax:Math.random()*.6+.2,phase:Math.random()*Math.PI*2,
+      speed:.003+Math.random()*.009,p:p};
   }
-
-  /* Nebulas — lebih terang, alpha lebih tinggi */
   function mkNeb(){
-    return{
-      x:Math.random()*W,y:Math.random()*H,
-      rx:Math.random()*220+100,ry:Math.random()*120+60,
-      a:Math.random()*.1+.06,           /* lebih terang */
-      hue:[210,220,245,195,260,200][Math.floor(Math.random()*6)],
-      sat:95,
-      vx:(Math.random()-.5)*.06,vy:(Math.random()-.5)*.05,
-      rot:Math.random()*Math.PI
-    };
+    return{x:Math.random()*W,y:Math.random()*H,rx:Math.random()*180+100,ry:Math.random()*90+50,
+      a:Math.random()*.025+.006,hue:Math.random()<.6?215:Math.random()<.5?200:240,
+      vx:(Math.random()-.5)*.028,vy:(Math.random()-.5)*.022,rot:Math.random()*Math.PI,drot:.0003};
   }
-
-  /* Shooting streaks — sesekali lewat */
-  function mkStreak(){
-    return{x:-50,y:Math.random()*H*.6,vx:8+Math.random()*6,vy:.5+Math.random()*1.5,life:1,maxLife:Math.random()*30+20,w:80+Math.random()*60};
-  }
-
-  for(var i=0;i<150;i++)stars.push(mkStar());
-  for(var j=0;j<6;j++)nebulas.push(mkNeb());
-
-  /* Tambah glow di CSS juga */
-  cv.style.filter='brightness(1.35) saturate(1.2)';
+  for(var i=0;i<170;i++)stars.push(mkStar());
+  for(var j=0;j<4;j++)nebulas.push(mkNeb());
 
   function draw(){
     requestAnimationFrame(draw);
-    /* Nebulas & bintang: setiap frame — smooth */
     ctx.clearRect(0,0,W,H);
-
-    /* Nebula */
     nebulas.forEach(function(n){
-      n.x+=n.vx;n.y+=n.vy;n.rot+=.0008;
+      n.x+=n.vx;n.y+=n.vy;n.rot+=n.drot;
       if(n.x<-n.rx)n.x=W+n.rx;if(n.x>W+n.rx)n.x=-n.rx;
       if(n.y<-n.ry)n.y=H+n.ry;if(n.y>H+n.ry)n.y=-n.ry;
       ctx.save();ctx.translate(n.x,n.y);ctx.rotate(n.rot);
       var g=ctx.createRadialGradient(0,0,0,0,0,n.rx);
-      g.addColorStop(0,'hsla('+n.hue+','+n.sat+'%,70%,'+n.a+')');
-      g.addColorStop(.5,'hsla('+n.hue+','+n.sat+'%,55%,'+(n.a*.4)+')');
-      g.addColorStop(1,'hsla('+n.hue+',80%,40%,0)');
+      g.addColorStop(0,'hsla('+n.hue+',80%,58%,'+n.a+')');
+      g.addColorStop(1,'hsla('+n.hue+',70%,40%,0)');
       ctx.scale(1,n.ry/n.rx);ctx.beginPath();ctx.arc(0,0,n.rx,0,Math.PI*2);
       ctx.fillStyle=g;ctx.fill();ctx.restore();
     });
-
-    /* Bintang */
     stars.forEach(function(s){
-      s.x+=s.vx;s.y+=s.vy;s.a+=s.da;
-      if(s.a<=s.aMin||s.a>=s.aMax)s.da*=-1;
+      s.phase+=s.speed;
+      var tw=Math.sin(s.phase)*.5+.5;
+      var alpha=s.aMin+(s.aMax-s.aMin)*tw;
+      s.x+=s.vx;s.y+=s.vy;
       if(s.x<0)s.x=W;if(s.x>W)s.x=0;if(s.y<0)s.y=H;if(s.y>H)s.y=0;
-      /* Glow untuk bintang besar */
-      if(s.r>1.2){
-        ctx.beginPath();ctx.arc(s.x,s.y,s.r*2.5,0,Math.PI*2);
-        ctx.fillStyle='hsla('+s.hue+','+s.sat+'%,85%,'+(s.a*.2)+')';ctx.fill();
-      }
-      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle='hsla('+s.hue+','+s.sat+'%,90%,'+s.a+')';ctx.fill();
-    });
-
-    /* Shooting star — random */
-    frame++;
-    if(frame%180===0&&Math.random()<.6)streaks.push(mkStreak());
-    streaks.forEach(function(sk,idx){
-      sk.x+=sk.vx;sk.y+=sk.vy;sk.life--;
-      if(sk.life<=0){streaks.splice(idx,1);return;}
-      var alpha=sk.life/sk.maxLife*.7;
-      var g2=ctx.createLinearGradient(sk.x,sk.y,sk.x-sk.w,sk.y-sk.w*.2);
-      g2.addColorStop(0,'rgba(255,255,255,'+alpha+')');
-      g2.addColorStop(1,'rgba(100,200,255,0)');
-      ctx.strokeStyle=g2;ctx.lineWidth=1.5;
-      ctx.beginPath();ctx.moveTo(sk.x,sk.y);ctx.lineTo(sk.x-sk.w,sk.y-sk.w*.2);ctx.stroke();
+      var col='hsla('+s.p[0]+','+s.p[1]+'%,'+s.p[2]+'%,';
+      if(s.r>1.1){ctx.beginPath();ctx.arc(s.x,s.y,s.r*2.8,0,Math.PI*2);ctx.fillStyle=col+(alpha*.1)+')';ctx.fill();}
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=col+alpha+')';ctx.fill();
     });
   }
   draw();
 })();
-
 </script>
 </body>
 </html>
