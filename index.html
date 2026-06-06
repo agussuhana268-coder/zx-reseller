@@ -682,7 +682,7 @@ body::after{display:none;}
           <polygon points="27,2 50,14.5 50,39.5 27,52 4,39.5 4,14.5" fill="rgba(6,13,26,.9)" stroke="rgba(56,189,248,.4)" stroke-width="1.4"/>
           <polygon points="27,8 44,17.5 44,36.5 27,46 10,36.5 10,17.5" fill="none" stroke="rgba(56,189,248,.08)" stroke-width=".8"/>
         </svg>
-        <span class="l-initial">R</span>
+        <span class="l-initial">M</span>
       </div>
       <div class="l-title">ZX RESELLER</div>
       <div class="l-sub">PANEL v1.0</div>
@@ -707,7 +707,7 @@ body::after{display:none;}
             <polygon points="20,3 36,12 36,28 20,37 4,28 4,12" fill="rgba(14,165,233,.1)" stroke="rgba(56,189,248,.5)" stroke-width="1"/>
             <polygon points="20,8 31,14.5 31,25.5 20,32 9,25.5 9,14.5" fill="none" stroke="rgba(56,189,248,.18)" stroke-width=".7"/>
           </svg>
-          <span class="tb-hex-letter">R</span>
+          <span class="tb-hex-letter">M</span>
         </div>
         <div class="tb-brand-text">
           <div class="tb-brand-main">ZX <span>RESELLER</span></div>
@@ -839,19 +839,15 @@ body::after{display:none;}
         <div class="rs-acc-profile card">
           <!-- Avatar -->
           <div class="rs-av-center">
-            <div class="rs-av-wrap" id="rs-av-wrap" onclick="go(document.getElementById('sb-settings'),'settings')" title="Atur foto di Settings">
+            <div class="rs-av-wrap" id="rs-av-wrap">
               <div class="rs-av-ring"></div>
               <div class="rs-av-ring rs-av-ring2"></div>
               <div id="rs-avatar">
                 <span id="rs-av-init">R</span>
                 <img id="rs-av-img" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;border-radius:50%;"/>
               </div>
-              <div class="rs-av-edit-btn">
-                <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-              </div>
             </div>
             <div style="font-size:7.5px;color:var(--sky);margin-top:3px;text-align:center;cursor:pointer;" onclick="go(document.getElementById('sb-settings'),'settings')">Atur di Settings →</div>
-            <div class="rs-av-hint">Klik foto untuk mengganti</div>
 
             <!-- Name + role below avatar -->
             <div id="rs-acc-name" class="rs-acc-name-text">—</div>
@@ -1016,11 +1012,11 @@ body::after{display:none;}
           <div class="sett-card-body">
             <div class="sett-sec-row">
               <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--grn);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <div><div class="sett-sec-label">Supabase Auth</div><div class="sett-sec-val">Akun dilindungi autentikasi Supabase</div></div>
+              <div><div class="sett-sec-label">Autentikasi Aman</div><div class="sett-sec-val">Akun dilindungi dengan enkripsi kata sandi</div></div>
             </div>
             <div class="sett-sec-row">
               <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--sky);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <div><div class="sett-sec-label">Data Terisolasi</div><div class="sett-sec-val">Hanya kamu yang bisa akses data ini</div></div>
+              <div><div class="sett-sec-label">Keamanan Data</div><div class="sett-sec-val">Data transaksi dan license tersimpan secara aman</div></div>
             </div>
             <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bdr3);">
               <div style="font-size:8px;color:var(--t3);">Untuk reset password, hubungi owner atau developer melalui halaman Support.</div>
@@ -1094,7 +1090,7 @@ body::after{display:none;}
                 </div>
                 <div class="sup-guide-item">
                   <div class="sup-guide-num">4</div>
-                  <div><div class="sup-guide-title">Foto Profil</div><div class="sup-guide-desc">Upload foto profil di halaman Akun. Foto tersimpan di cloud dan bisa dilihat oleh sistem.</div></div>
+                  <div><div class="sup-guide-title">Foto Profil</div><div class="sup-guide-desc">Upload foto profil di halaman Settings. Foto tersimpan di cloud dan bisa dilihat oleh sistem.</div></div>
                 </div>
               </div>
             </div>
@@ -1212,7 +1208,7 @@ body::after{display:none;}
   <div class="mo-box">
     <div class="mo-close" onclick="closeModal('mo-create')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
     <div class="mo-title">Buat Reseller Baru</div>
-    <div class="mo-sub">Isi form berikut. Akun login Supabase otomatis dibuat — reseller langsung bisa login.</div>
+    <div class="mo-sub">Isi form berikut. Akun login reseller otomatis dibuat — reseller langsung bisa login.</div>
     <div class="fg"><label class="fl">Username</label><input class="fi" id="cr-username" placeholder="nama_reseller" autocomplete="off"/></div>
     <div class="fg"><label class="fl">Email</label><input class="fi" id="cr-email" type="email" placeholder="reseller@email.com" autocomplete="off"/></div>
     <div class="fg"><label class="fl">Password</label><input class="fi" id="cr-pass" type="password" placeholder="Min 6 karakter" autocomplete="new-password"/></div>
@@ -1864,7 +1860,7 @@ async function rsHandlePhoto(input){
     if(!uploadRes.ok){
       var errText = await uploadRes.text();
       var parsed = {}; try{parsed=JSON.parse(errText);}catch(_){}
-      if(uploadRes.status===404) throw new Error('Bucket "'+AVATAR_BUCKET+'" tidak ditemukan di Supabase.');
+      if(uploadRes.status===404) throw new Error('Bucket "'+AVATAR_BUCKET+'" tidak ditemukan di storage.');
       throw new Error('Upload gagal (' + uploadRes.status + '): ' + (parsed.message||errText));
     }
     var publicUrl  = SUPA_URL + '/storage/v1/object/public/' + AVATAR_BUCKET + '/' + filePath;
@@ -1966,8 +1962,8 @@ function initSupport(){
     ['Slot saya habis, bagaimana cara tambah?','Hubungi owner melalui WhatsApp atau email. Owner akan menambah slot kamu melalui panel owner.'],
     ['Email ke pembeli tidak terkirim?','Cek koneksi internet, lalu pastikan nama file produk sesuai. Jika masih gagal, hubungi developer.'],
     ['Bisakah saya lihat key milik reseller lain?','Tidak. Setiap reseller hanya bisa melihat data miliknya sendiri.'],
-    ['Bagaimana cara ganti foto profil?','Buka halaman Akun → klik lingkaran foto → pilih foto dari galeri. Foto langsung tersimpan ke cloud.'],
-    ['Saya lupa password, apa yang harus dilakukan?','Hubungi owner untuk reset password. Owner bisa reset melalui panel Supabase Auth.'],
+    ['Bagaimana cara ganti foto profil?','Buka halaman Settings → klik lingkaran foto atau tombol Upload Foto. Foto langsung tersimpan ke cloud.'],
+    ['Saya lupa password, apa yang harus dilakukan?','Hubungi owner untuk reset password. Owner bisa mereset password akun kamu.'],
     ['Key yang dibuat bisa dipakai di berapa device?','Tergantung produk. ZX CORE & APEX: 2 slot device. ZX EXCLUSIVE: 4 slot device.'],
   ];
   var el = document.getElementById('sup-faq-list');
